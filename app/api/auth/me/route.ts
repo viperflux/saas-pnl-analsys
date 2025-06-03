@@ -1,14 +1,14 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getCurrentUserFromRequest } from '@/lib/auth';
+import { NextRequest, NextResponse } from "next/server";
+import { getCurrentUserFromRequest } from "@/lib/auth/auth";
 
 export async function GET(request: NextRequest) {
   try {
     const user = await getCurrentUserFromRequest(request);
-    
+
     if (!user) {
       return NextResponse.json(
-        { message: 'Not authenticated' },
-        { status: 401 }
+        { message: "Not authenticated" },
+        { status: 401 },
       );
     }
 
@@ -21,19 +21,15 @@ export async function GET(request: NextRequest) {
       lastName: user.lastName,
       isActive: user.isActive,
       createdAt: user.createdAt,
-      updatedAt: user.updatedAt
+      updatedAt: user.updatedAt,
     };
 
-    return NextResponse.json(
-      { user: userResponse },
-      { status: 200 }
-    );
-
+    return NextResponse.json({ user: userResponse }, { status: 200 });
   } catch (error) {
-    console.error('Get current user error:', error);
+    console.error("Get current user error:", error);
     return NextResponse.json(
-      { message: 'Internal server error' },
-      { status: 500 }
+      { message: "Internal server error" },
+      { status: 500 },
     );
   }
 }
