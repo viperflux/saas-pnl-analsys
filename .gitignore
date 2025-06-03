@@ -23,6 +23,7 @@ logs/
 AUTHENTICATION.md
 DEPLOYMENT.md
 Prompt.md
+.gitignore
 
 # Optional: for Docker or runtime-specific secrets
 .env

@@ -108,7 +108,7 @@ CREATE INDEX idx_configuration_addons_addon_id ON configuration_addons(addon_id)
 -- Insert default admin user (password: admin123 - should be changed after first login)
 -- Password hash for 'admin123' using bcrypt with 12 salt rounds
 INSERT INTO users (email, password_hash, role, first_name, last_name) VALUES (
-    'latif@desinabl.com',
+    'admin@gmail.com',
     '$2b$12$iHncZ76nWAnnWfgZWPPuX.27OGQdjolQ9S6e8OGS0QrFhIB.zsnPG',
     'admin',
     'Deuce',
@@ -142,7 +142,7 @@ INSERT INTO configurations (user_id, name, description, is_default, config) VALU
 
 -- Insert default growth scenarios for admin user
 INSERT INTO growth_scenarios (user_id, name, description, growth_rates, is_default) VALUES
-((SELECT id FROM users WHERE role = 'admin' LIMIT 1), 'Conservative Growth', 'Steady 5-8% monthly growth with seasonal variations', 
+((SELECT id FROM users WHERE role = 'admin' LIMIT 1), 'Conservative Growth', 'Steady 5-8% monthly growth with seasonal variations',
  '[5, 6, 7, 5, 6, 7, 8, 7, 6, 5, 4, 5, 6, 7, 8, 7, 6, 5, 6, 7, 8, 7, 6, 5, 6, 7, 8, 7, 6, 5, 6, 7, 8, 7, 6, 5, 6, 7, 8, 7, 6, 5, 6, 7, 8, 7, 6, 5, 6, 7, 8, 7, 6, 5, 6, 7, 8, 7, 6, 5]'::jsonb, true),
 ((SELECT id FROM users WHERE role = 'admin' LIMIT 1), 'Aggressive Growth', 'High growth targeting 10-15% monthly increases',
  '[10, 12, 15, 12, 13, 14, 15, 13, 12, 10, 8, 10, 12, 15, 18, 15, 14, 12, 13, 15, 18, 16, 14, 12, 13, 15, 18, 16, 14, 12, 13, 15, 18, 16, 14, 12, 13, 15, 18, 16, 14, 12, 13, 15, 18, 16, 14, 12, 13, 15, 18, 16, 14, 12, 13, 15, 18, 16, 14, 12]'::jsonb, false),
