@@ -52,3 +52,4 @@ turbo/
 *.tgz
 *.lock
 *.bak
+.vercel

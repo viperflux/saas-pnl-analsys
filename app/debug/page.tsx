@@ -26,7 +26,7 @@ export default function DebugPage() {
         setTokenInfo('No valid token found');
       }
     } catch (err) {
-      setError('Error checking auth: ' + err.message);
+      setError('Error checking auth: ' + (err instanceof Error ? err.message : String(err)));
     }
   };
 
