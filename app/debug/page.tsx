@@ -37,7 +37,7 @@ export default function DebugPage() {
       setTokenInfo('');
       setTimeout(checkAuth, 1000);
     } catch (err) {
-      setError('Error clearing cookies: ' + err.message);
+      setError('Error clearing cookies: ' + (err instanceof Error ? err.message : String(err)));
     }
   };
 
@@ -63,7 +63,7 @@ export default function DebugPage() {
         setError('Login failed: ' + data.message);
       }
     } catch (err) {
-      setError('Login error: ' + err.message);
+      setError('Login error: ' + (err instanceof Error ? err.message : String(err)));
     }
   };
 
