@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { loginAction } from '@/lib/actions';
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { loginAction } from "@/lib/actions";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [debugInfo, setDebugInfo] = useState('');
+  const [debugInfo, setDebugInfo] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -20,57 +20,57 @@ export default function LoginPage() {
 
   const checkAuthStatus = async () => {
     try {
-      const response = await fetch('/api/auth/me', {
-        credentials: 'include'
+      const response = await fetch("/api/auth/me", {
+        credentials: "include",
       });
       if (response.ok) {
         const data = await response.json();
         setDebugInfo(`Already authenticated as: ${data.user.email}`);
         // If already authenticated, redirect immediately
         setTimeout(() => {
-          window.location.href = '/';
+          window.location.href = "/";
         }, 1000);
       } else {
-        setDebugInfo('Not authenticated');
+        setDebugInfo("Not authenticated");
       }
     } catch (error) {
-      setDebugInfo('Error checking auth status');
+      setDebugInfo("Error checking auth status");
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setIsLoading(true);
 
     try {
-      console.log('Attempting login with:', email);
-      
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
+      console.log("Attempting login with:", email);
+
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
-        credentials: 'include', // Ensure cookies are included
+        credentials: "include", // Ensure cookies are included
       });
 
       const data = await response.json();
-      console.log('Login response:', { status: response.status, data });
+      console.log("Login response:", { status: response.status, data });
 
       if (response.ok) {
-        console.log('Login successful, redirecting...');
-        setDebugInfo('Login successful! Redirecting...');
-        
+        console.log("Login successful, redirecting...");
+        setDebugInfo("Login successful! Redirecting...");
+
         // Use window.location.replace for immediate redirect with cookie recognition
-        window.location.replace('/');
+        window.location.replace("/");
       } else {
-        console.error('Login failed:', data.message);
-        setError(data.message || 'Login failed');
+        console.error("Login failed:", data.message);
+        setError(data.message || "Login failed");
       }
     } catch (error) {
-      console.error('Login error:', error);
-      setError('An error occurred. Please try again.');
+      console.error("Login error:", error);
+      setError("An error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -137,19 +137,8 @@ export default function LoginPage() {
               disabled={isLoading}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? 'Signing in...' : 'Sign in'}
+              {isLoading ? "Signing in..." : "Sign in"}
             </button>
-          </div>
-
-          <div className="text-center">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              Default admin credentials: admin@localhost.com / admin123
-            </p>
-            {debugInfo && (
-              <p className="text-xs text-blue-600 dark:text-blue-400 mt-2">
-                Debug: {debugInfo}
-              </p>
-            )}
           </div>
         </form>
       </div>

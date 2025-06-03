@@ -47,11 +47,11 @@ CREATE INDEX idx_user_sessions_last_accessed ON user_sessions(last_accessed);
 -- Insert default admin user (password: admin123 - should be changed after first login)
 -- Password hash for 'admin123' using bcrypt with 12 salt rounds
 INSERT INTO users (email, password_hash, role, first_name, last_name) VALUES (
-    'admin@localhost.com',
-    '$2b$12$le0Y3wyaMMTBc5ZdHZv0MeX1wYOKgyOc1U705NaEksX8RFoDo2G/O',
+    'latif@desinabl.com',
+    '$2b$12$iHncZ76nWAnnWfgZWPPuX.27OGQdjolQ9S6e8OGS0QrFhIB.zsnPG',
     'admin',
-    'System',
-    'Administrator'
+    'Deuce',
+    'Rabbit'
 );
 
 -- Insert default configuration

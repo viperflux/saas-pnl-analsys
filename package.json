@@ -12,6 +12,9 @@
     "db:migrate": "tsx lib/migrate.ts",
     "db:migrate:auth": "tsx scripts/migrate.ts",
     "db:studio": "drizzle-kit studio",
+    "db:upload": "node scripts/upload-schema.js",
+    "admin:setup": "node scripts/setup-admin.js",
+    "admin:update": "node scripts/update-admin.js",
     "vercel-build": "next build",
     "postdeploy": "npm run db:migrate"
   },
@@ -23,6 +26,7 @@
     "jose": "^6.0.11",
     "jsonwebtoken": "^9.0.2",
     "next": "14.2.29",
+    "pg": "^8.16.0",
     "postgres": "^3.4.3",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
