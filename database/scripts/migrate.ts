@@ -17,7 +17,7 @@ async function runMigrations() {
   try {
     console.log('Running database migrations...');
     
-    const migrationsDir = path.join(process.cwd(), 'migrations');
+    const migrationsDir = path.join(process.cwd(), 'database', 'migrations');
     
     if (!fs.existsSync(migrationsDir)) {
       console.log('No migrations directory found, skipping...');

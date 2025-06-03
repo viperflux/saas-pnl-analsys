@@ -3,8 +3,8 @@ import jwt from "jsonwebtoken";
 import { jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
-import { getUserById, getUserByEmail } from "./db";
-import type { User } from "./schema";
+import { getUserById, getUserByEmail } from "../database/db";
+import { User } from "../database/schema";
 
 const JWT_SECRET =
   process.env.JWT_SECRET ||

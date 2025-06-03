@@ -1,6 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { FinancialData } from '@/types';
-import { apiClient, ConfigurationData, getSessionId } from '@/lib/apiClient';
+import React, { useState, useEffect } from "react";
+import { FinancialData } from "@/types";
+import {
+  apiClient,
+  ConfigurationData,
+  getSessionId,
+} from "@/lib/utils/apiClient";
 
 interface ConfigurationManagerProps {
   currentConfig: FinancialData;
@@ -9,20 +13,20 @@ interface ConfigurationManagerProps {
   onSave: () => void;
 }
 
-export default function ConfigurationManager({ 
-  currentConfig, 
-  currentConfigId, 
-  onConfigChange, 
-  onSave 
+export default function ConfigurationManager({
+  currentConfig,
+  currentConfigId,
+  onConfigChange,
+  onSave,
 }: ConfigurationManagerProps) {
   const [configurations, setConfigurations] = useState<ConfigurationData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [showLoadDialog, setShowLoadDialog] = useState(false);
-  const [saveName, setSaveName] = useState('');
-  const [saveDescription, setSaveDescription] = useState('');
-  const [sessionId, setSessionId] = useState('');
+  const [saveName, setSaveName] = useState("");
+  const [saveDescription, setSaveDescription] = useState("");
+  const [sessionId, setSessionId] = useState("");
   const [saveAsNew, setSaveAsNew] = useState(false);
 
   useEffect(() => {
@@ -36,13 +40,16 @@ export default function ConfigurationManager({
       const response = await apiClient.fetchConfigurations(sessionId);
       setConfigurations(response.configurations);
       setSessionId(response.sessionId);
-      
+
       // If no current config is selected, use the default/current from server
       if (!currentConfigId && response.currentConfig) {
-        onConfigChange(response.currentConfig.config, response.currentConfig.id);
+        onConfigChange(
+          response.currentConfig.config,
+          response.currentConfig.id,
+        );
       }
     } catch (error) {
-      console.error('Error loading configurations:', error);
+      console.error("Error loading configurations:", error);
     } finally {
       setIsLoading(false);
     }
@@ -50,27 +57,27 @@ export default function ConfigurationManager({
 
   const handleSave = async () => {
     if (!saveName.trim()) return;
-    
+
     try {
       setIsSaving(true);
-      
+
       const savedConfig = await apiClient.saveConfiguration(
         currentConfig,
         saveName,
-        saveAsNew ? undefined : currentConfigId // Pass undefined to create new config when saving as new
+        saveAsNew ? undefined : currentConfigId, // Pass undefined to create new config when saving as new
       );
-      
+
       await loadConfigurations();
       onConfigChange(currentConfig, savedConfig.id);
       onSave();
-      
+
       setShowSaveDialog(false);
-      setSaveName('');
-      setSaveDescription('');
+      setSaveName("");
+      setSaveDescription("");
       setSaveAsNew(false);
     } catch (error) {
-      console.error('Error saving configuration:', error);
-      alert('Failed to save configuration. Please try again.');
+      console.error("Error saving configuration:", error);
+      alert("Failed to save configuration. Please try again.");
     } finally {
       setIsSaving(false);
     }
@@ -82,28 +89,29 @@ export default function ConfigurationManager({
       onConfigChange(config.config, config.id);
       setShowLoadDialog(false);
     } catch (error) {
-      console.error('Error loading configuration:', error);
-      alert('Failed to load configuration. Please try again.');
+      console.error("Error loading configuration:", error);
+      alert("Failed to load configuration. Please try again.");
     }
   };
 
   const handleDelete = async (configId: string) => {
-    if (!confirm('Are you sure you want to delete this configuration?')) return;
-    
+    if (!confirm("Are you sure you want to delete this configuration?")) return;
+
     try {
       await apiClient.deleteConfiguration(configId);
       await loadConfigurations();
-      
+
       // If deleted config was current, switch to default
       if (configId === currentConfigId) {
-        const defaultConfig = configurations.find(c => c.isDefault) || configurations[0];
+        const defaultConfig =
+          configurations.find((c) => c.isDefault) || configurations[0];
         if (defaultConfig) {
           onConfigChange(defaultConfig.config, defaultConfig.id);
         }
       }
     } catch (error) {
-      console.error('Error deleting configuration:', error);
-      alert('Failed to delete configuration. Please try again.');
+      console.error("Error deleting configuration:", error);
+      alert("Failed to delete configuration. Please try again.");
     }
   };
 
@@ -113,14 +121,16 @@ export default function ConfigurationManager({
       setSaveAsNew(false);
       return;
     }
-    
+
     try {
       setIsSaving(true);
-      await apiClient.updateConfiguration(currentConfigId, { config: currentConfig });
+      await apiClient.updateConfiguration(currentConfigId, {
+        config: currentConfig,
+      });
       onSave();
     } catch (error) {
-      console.error('Error saving configuration:', error);
-      alert('Failed to save configuration. Please try again.');
+      console.error("Error saving configuration:", error);
+      alert("Failed to save configuration. Please try again.");
     } finally {
       setIsSaving(false);
     }
@@ -129,17 +139,27 @@ export default function ConfigurationManager({
   const handleSaveAs = () => {
     setSaveAsNew(true);
     setShowSaveDialog(true);
-    setSaveName(currentConfigId ? `${configurations.find(c => c.id === currentConfigId)?.name || 'Configuration'} Copy` : '');
+    setSaveName(
+      currentConfigId
+        ? `${configurations.find((c) => c.id === currentConfigId)?.name || "Configuration"} Copy`
+        : "",
+    );
   };
 
-  const currentConfigName = configurations.find(c => c.id === currentConfigId)?.name || 'Unsaved Configuration';
+  const currentConfigName =
+    configurations.find((c) => c.id === currentConfigId)?.name ||
+    "Unsaved Configuration";
 
   return (
     <div className="flex items-center space-x-3">
       {/* Current Configuration Display */}
       <div className="flex items-center space-x-2">
-        <span className="text-sm text-gray-600 dark:text-gray-400">Current:</span>
-        <span className="font-medium text-gray-900 dark:text-gray-100">{currentConfigName}</span>
+        <span className="text-sm text-gray-600 dark:text-gray-400">
+          Current:
+        </span>
+        <span className="font-medium text-gray-900 dark:text-gray-100">
+          {currentConfigName}
+        </span>
         {!currentConfigId && (
           <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400">
             Unsaved
@@ -160,7 +180,7 @@ export default function ConfigurationManager({
             Saving...
           </div>
         ) : (
-          '💾 Save'
+          "💾 Save"
         )}
       </button>
 
@@ -187,7 +207,7 @@ export default function ConfigurationManager({
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              {saveAsNew ? 'Save As New Configuration' : 'Save Configuration'}
+              {saveAsNew ? "Save As New Configuration" : "Save Configuration"}
             </h3>
             <div className="space-y-4">
               <div>
@@ -197,7 +217,11 @@ export default function ConfigurationManager({
                   value={saveName}
                   onChange={(e) => setSaveName(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  placeholder={saveAsNew ? "Enter new configuration name" : "Enter configuration name"}
+                  placeholder={
+                    saveAsNew
+                      ? "Enter new configuration name"
+                      : "Enter configuration name"
+                  }
                   autoFocus
                 />
               </div>
@@ -216,8 +240,8 @@ export default function ConfigurationManager({
               <button
                 onClick={() => {
                   setShowSaveDialog(false);
-                  setSaveName('');
-                  setSaveDescription('');
+                  setSaveName("");
+                  setSaveDescription("");
                 }}
                 className="btn-secondary"
               >
@@ -228,7 +252,7 @@ export default function ConfigurationManager({
                 disabled={!saveName.trim() || isSaving}
                 className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isSaving ? 'Saving...' : (saveAsNew ? 'Save As New' : 'Save')}
+                {isSaving ? "Saving..." : saveAsNew ? "Save As New" : "Save"}
               </button>
             </div>
           </div>
@@ -245,11 +269,15 @@ export default function ConfigurationManager({
             {isLoading ? (
               <div className="text-center py-8">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto mb-4"></div>
-                <p className="text-gray-500 dark:text-gray-400">Loading configurations...</p>
+                <p className="text-gray-500 dark:text-gray-400">
+                  Loading configurations...
+                </p>
               </div>
             ) : configurations.length === 0 ? (
               <div className="text-center py-8">
-                <p className="text-gray-500 dark:text-gray-400">No saved configurations found.</p>
+                <p className="text-gray-500 dark:text-gray-400">
+                  No saved configurations found.
+                </p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -258,8 +286,8 @@ export default function ConfigurationManager({
                     key={config.id}
                     className={`p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${
                       config.id === currentConfigId
-                        ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
-                        : 'border-gray-200 dark:border-gray-600'
+                        ? "border-primary-500 bg-primary-50 dark:bg-primary-900/20"
+                        : "border-gray-200 dark:border-gray-600"
                     }`}
                   >
                     <div className="flex justify-between items-start">
@@ -285,7 +313,8 @@ export default function ConfigurationManager({
                           </p>
                         )}
                         <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">
-                          Updated: {new Date(config.updatedAt).toLocaleDateString()}
+                          Updated:{" "}
+                          {new Date(config.updatedAt).toLocaleDateString()}
                         </p>
                       </div>
                       <div className="flex space-x-2 ml-4">

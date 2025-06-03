@@ -1,6 +1,6 @@
-import React from 'react';
-import { ProjectionTimeframe } from '@/types';
-import { PROJECTION_TIMEFRAMES } from '@/lib/config';
+import React from "react";
+import { ProjectionTimeframe } from "@/types";
+import { PROJECTION_TIMEFRAMES } from "@/lib/utils/config";
 
 interface ProjectionTimeframeSelectorProps {
   selectedMonths: number;
@@ -11,13 +11,11 @@ interface ProjectionTimeframeSelectorProps {
 export default function ProjectionTimeframeSelector({
   selectedMonths,
   onTimeframeChange,
-  className = ''
+  className = "",
 }: ProjectionTimeframeSelectorProps) {
   return (
     <div className={`space-y-2 ${className}`}>
-      <label className="form-label">
-        Projection Timeframe
-      </label>
+      <label className="form-label">Projection Timeframe</label>
       <select
         value={selectedMonths}
         onChange={(e) => onTimeframeChange(Number(e.target.value))}

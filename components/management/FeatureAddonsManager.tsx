@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { FeatureAddon } from '@/types';
-import { DEFAULT_FEATURE_ADDONS } from '@/lib/config';
+import React, { useState, useEffect } from "react";
+import { FeatureAddon } from "@/types";
+import { DEFAULT_FEATURE_ADDONS } from "@/lib/utils/config";
 
 interface FeatureAddonsManagerProps {
   enabledAddons: string[];
@@ -15,20 +15,20 @@ export default function FeatureAddonsManager({
   onAddonsChange,
   projectionMonths,
   clientCount = 100,
-  className = ''
+  className = "",
 }: FeatureAddonsManagerProps) {
   const [addons, setAddons] = useState<FeatureAddon[]>(DEFAULT_FEATURE_ADDONS);
   const [showCustomAddon, setShowCustomAddon] = useState(false);
   const [customAddon, setCustomAddon] = useState<Partial<FeatureAddon>>({
-    name: '',
-    description: '',
+    name: "",
+    description: "",
     price: 0,
-    pricingModel: 'flat_rate'
+    pricingModel: "flat_rate",
   });
 
   const handleAddonToggle = (addonId: string) => {
     const newEnabledAddons = enabledAddons.includes(addonId)
-      ? enabledAddons.filter(id => id !== addonId)
+      ? enabledAddons.filter((id) => id !== addonId)
       : [...enabledAddons, addonId];
     onAddonsChange(newEnabledAddons);
   };
@@ -40,12 +40,14 @@ export default function FeatureAddonsManager({
 
   const calculateMonthlyAddonRevenue = (addon: FeatureAddon): number => {
     switch (addon.pricingModel) {
-      case 'flat_rate':
+      case "flat_rate":
         return addon.price;
-      case 'per_user':
+      case "per_user":
         return addon.price * clientCount;
-      case 'usage_based':
-        const estimatedUsage = addon.usageLimit ? Math.min(clientCount * 10, addon.usageLimit) : clientCount * 10;
+      case "usage_based":
+        const estimatedUsage = addon.usageLimit
+          ? Math.min(clientCount * 10, addon.usageLimit)
+          : clientCount * 10;
         return (estimatedUsage / (addon.usageLimit || 1000)) * addon.price;
       default:
         return addon.price;
@@ -54,35 +56,35 @@ export default function FeatureAddonsManager({
 
   const addCustomAddon = () => {
     if (!customAddon.name || !customAddon.price) return;
-    
+
     const newAddon: FeatureAddon = {
       id: `custom-${Date.now()}`,
       name: customAddon.name,
-      description: customAddon.description || '',
+      description: customAddon.description || "",
       price: customAddon.price,
-      pricingModel: customAddon.pricingModel || 'flat_rate',
+      pricingModel: customAddon.pricingModel || "flat_rate",
       usageLimit: customAddon.usageLimit,
-      enabled: false
+      enabled: false,
     };
 
     setAddons([...addons, newAddon]);
     setCustomAddon({
-      name: '',
-      description: '',
+      name: "",
+      description: "",
       price: 0,
-      pricingModel: 'flat_rate'
+      pricingModel: "flat_rate",
     });
     setShowCustomAddon(false);
   };
 
   const removeCustomAddon = (addonId: string) => {
-    setAddons(addons.filter(addon => addon.id !== addonId));
-    onAddonsChange(enabledAddons.filter(id => id !== addonId));
+    setAddons(addons.filter((addon) => addon.id !== addonId));
+    onAddonsChange(enabledAddons.filter((id) => id !== addonId));
   };
 
   const getTotalAddonRevenue = (): number => {
     return addons
-      .filter(addon => enabledAddons.includes(addon.id))
+      .filter((addon) => enabledAddons.includes(addon.id))
       .reduce((total, addon) => total + calculateAddonRevenue(addon), 0);
   };
 
@@ -90,7 +92,9 @@ export default function FeatureAddonsManager({
     <div className={`space-y-4 ${className}`}>
       <div className="flex justify-between items-center">
         <div>
-          <h3 className="font-medium text-gray-900 dark:text-white">Feature Add-ons</h3>
+          <h3 className="font-medium text-gray-900 dark:text-white">
+            Feature Add-ons
+          </h3>
           <p className="text-sm text-gray-500 dark:text-gray-400">
             Additional revenue streams for your SaaS
           </p>
@@ -105,15 +109,19 @@ export default function FeatureAddonsManager({
 
       {showCustomAddon && (
         <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 space-y-4">
-          <h4 className="font-medium text-gray-900 dark:text-white">Custom Add-on</h4>
-          
+          <h4 className="font-medium text-gray-900 dark:text-white">
+            Custom Add-on
+          </h4>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="form-label">Add-on Name</label>
               <input
                 type="text"
-                value={customAddon.name || ''}
-                onChange={(e) => setCustomAddon({...customAddon, name: e.target.value})}
+                value={customAddon.name || ""}
+                onChange={(e) =>
+                  setCustomAddon({ ...customAddon, name: e.target.value })
+                }
                 className="form-input"
                 placeholder="e.g., Premium Analytics"
               />
@@ -122,8 +130,13 @@ export default function FeatureAddonsManager({
               <label className="form-label">Description</label>
               <input
                 type="text"
-                value={customAddon.description || ''}
-                onChange={(e) => setCustomAddon({...customAddon, description: e.target.value})}
+                value={customAddon.description || ""}
+                onChange={(e) =>
+                  setCustomAddon({
+                    ...customAddon,
+                    description: e.target.value,
+                  })
+                }
                 className="form-input"
                 placeholder="Brief description"
               />
@@ -134,8 +147,13 @@ export default function FeatureAddonsManager({
             <div>
               <label className="form-label">Pricing Model</label>
               <select
-                value={customAddon.pricingModel || 'flat_rate'}
-                onChange={(e) => setCustomAddon({...customAddon, pricingModel: e.target.value as any})}
+                value={customAddon.pricingModel || "flat_rate"}
+                onChange={(e) =>
+                  setCustomAddon({
+                    ...customAddon,
+                    pricingModel: e.target.value as any,
+                  })
+                }
                 className="form-input"
               >
                 <option value="flat_rate">Flat Rate</option>
@@ -148,19 +166,29 @@ export default function FeatureAddonsManager({
               <input
                 type="number"
                 value={customAddon.price || 0}
-                onChange={(e) => setCustomAddon({...customAddon, price: Number(e.target.value)})}
+                onChange={(e) =>
+                  setCustomAddon({
+                    ...customAddon,
+                    price: Number(e.target.value),
+                  })
+                }
                 className="form-input"
                 min="0"
                 step="0.01"
               />
             </div>
-            {customAddon.pricingModel === 'usage_based' && (
+            {customAddon.pricingModel === "usage_based" && (
               <div>
                 <label className="form-label">Usage Limit</label>
                 <input
                   type="number"
                   value={customAddon.usageLimit || 0}
-                  onChange={(e) => setCustomAddon({...customAddon, usageLimit: Number(e.target.value)})}
+                  onChange={(e) =>
+                    setCustomAddon({
+                      ...customAddon,
+                      usageLimit: Number(e.target.value),
+                    })
+                  }
                   className="form-input"
                   min="0"
                 />
@@ -191,15 +219,15 @@ export default function FeatureAddonsManager({
           const isEnabled = enabledAddons.includes(addon.id);
           const monthlyRevenue = calculateMonthlyAddonRevenue(addon);
           const totalRevenue = calculateAddonRevenue(addon);
-          const isCustom = addon.id.startsWith('custom-');
+          const isCustom = addon.id.startsWith("custom-");
 
           return (
             <div
               key={addon.id}
               className={`border rounded-lg p-4 transition-colors ${
                 isEnabled
-                  ? 'border-blue-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20'
-                  : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800'
+                  ? "border-blue-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20"
+                  : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800"
               }`}
             >
               <div className="flex items-start justify-between">
@@ -226,9 +254,12 @@ export default function FeatureAddonsManager({
                     </p>
                     <div className="flex items-center space-x-4 mt-2 text-xs text-gray-500 dark:text-gray-400">
                       <span>
-                        {addon.pricingModel === 'flat_rate' && `$${addon.price}/month`}
-                        {addon.pricingModel === 'per_user' && `$${addon.price} per user/month`}
-                        {addon.pricingModel === 'usage_based' && `$${addon.price} per ${addon.usageLimit} units`}
+                        {addon.pricingModel === "flat_rate" &&
+                          `$${addon.price}/month`}
+                        {addon.pricingModel === "per_user" &&
+                          `$${addon.price} per user/month`}
+                        {addon.pricingModel === "usage_based" &&
+                          `$${addon.price} per ${addon.usageLimit} units`}
                       </span>
                       {isEnabled && (
                         <span className="font-medium text-green-600 dark:text-green-400">
@@ -276,7 +307,8 @@ export default function FeatureAddonsManager({
             </span>
           </div>
           <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            ${(getTotalAddonRevenue() / projectionMonths).toFixed(0)}/month average
+            ${(getTotalAddonRevenue() / projectionMonths).toFixed(0)}/month
+            average
           </div>
         </div>
       )}

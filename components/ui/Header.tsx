@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { useDarkMode } from "@/lib/darkMode";
-import ConfigurationManager from "./ConfigurationManager";
+import { useDarkMode } from "@/lib/utils/darkMode";
 import { FinancialData } from "@/types";
+import ConfigurationManager from "../management/ConfigurationManager";
 
 interface User {
   id: string;
@@ -42,7 +42,10 @@ export default function Header({
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+      if (
+        userMenuRef.current &&
+        !userMenuRef.current.contains(event.target as Node)
+      ) {
         setShowUserMenu(false);
       }
     }
@@ -139,14 +142,14 @@ export default function Header({
                 >
                   <div className="w-6 h-6 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center">
                     <span className="text-white text-xs font-bold">
-                      {(currentUser.firstName || currentUser.email)[0].toUpperCase()}
+                      {(currentUser.firstName ||
+                        currentUser.email)[0].toUpperCase()}
                     </span>
                   </div>
                   <span className="hidden sm:block text-sm font-medium text-gray-900 dark:text-white">
-                    {currentUser.firstName && currentUser.lastName 
+                    {currentUser.firstName && currentUser.lastName
                       ? `${currentUser.firstName} ${currentUser.lastName}`
-                      : currentUser.email.split('@')[0]
-                    }
+                      : currentUser.email.split("@")[0]}
                   </span>
                 </button>
 
@@ -187,8 +190,22 @@ export default function Header({
               onClick={() => setShowMobileMenu(!showMobileMenu)}
               className="lg:hidden p-1.5 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={showMobileMenu ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d={
+                    showMobileMenu
+                      ? "M6 18L18 6M6 6l12 12"
+                      : "M4 6h16M4 12h16M4 18h16"
+                  }
+                />
               </svg>
             </button>
           </div>

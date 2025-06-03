@@ -1,6 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { authenticate, setAuthCookie, validateEmail, createToken } from '@/lib/auth';
-import { createTokenEdge } from '@/lib/auth-edge';
+import { NextRequest, NextResponse } from "next/server";
+import {
+  authenticate,
+  setAuthCookie,
+  validateEmail,
+  createToken,
+} from "@/lib/auth/auth";
+import { createTokenEdge } from "@/lib/auth/auth-edge";
 
 export async function POST(request: NextRequest) {
   try {
@@ -9,15 +14,15 @@ export async function POST(request: NextRequest) {
     // Validate input
     if (!email || !password) {
       return NextResponse.json(
-        { message: 'Email and password are required' },
-        { status: 400 }
+        { message: "Email and password are required" },
+        { status: 400 },
       );
     }
 
     if (!validateEmail(email)) {
       return NextResponse.json(
-        { message: 'Invalid email format' },
-        { status: 400 }
+        { message: "Invalid email format" },
+        { status: 400 },
       );
     }
 
@@ -26,8 +31,8 @@ export async function POST(request: NextRequest) {
 
     if (!result) {
       return NextResponse.json(
-        { message: 'Invalid credentials' },
-        { status: 401 }
+        { message: "Invalid credentials" },
+        { status: 401 },
       );
     }
 
@@ -35,40 +40,39 @@ export async function POST(request: NextRequest) {
     const edgeToken = await createTokenEdge({
       userId: result.user.id,
       email: result.user.email,
-      role: result.user.role
+      role: result.user.role,
     });
 
     // Set authentication cookie
     const response = NextResponse.json(
-      { 
-        message: 'Login successful',
+      {
+        message: "Login successful",
         user: {
           id: result.user.id,
           email: result.user.email,
           role: result.user.role,
           firstName: result.user.firstName,
-          lastName: result.user.lastName
-        }
+          lastName: result.user.lastName,
+        },
       },
-      { status: 200 }
+      { status: 200 },
     );
 
     // Set the auth cookie with edge-compatible token
-    response.cookies.set('auth-token', edgeToken, {
+    response.cookies.set("auth-token", edgeToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60, // 7 days
-      path: '/'
+      path: "/",
     });
 
     return response;
-
   } catch (error) {
-    console.error('Login error:', error);
+    console.error("Login error:", error);
     return NextResponse.json(
-      { message: 'Internal server error' },
-      { status: 500 }
+      { message: "Internal server error" },
+      { status: 500 },
     );
   }
 }
