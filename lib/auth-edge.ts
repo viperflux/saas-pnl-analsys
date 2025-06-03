@@ -15,7 +15,7 @@ export interface AuthPayload {
 
 // Edge-compatible JWT creation
 export async function createTokenEdge(payload: AuthPayload): Promise<string> {
-  return await new SignJWT(payload)
+  return await new SignJWT(payload as any)
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime('7d')
