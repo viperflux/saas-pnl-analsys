@@ -1,6 +1,6 @@
-import React from 'react';
-import { MonthlyData } from '@/types';
-import { formatCurrency, formatNumber } from '@/lib/calculations';
+import React from "react";
+import { MonthlyData } from "@/types";
+import { formatCurrency, formatNumber } from "@/lib/calculations/calculations";
 
 interface CashFlowTableProps {
   monthlyData: MonthlyData[];
@@ -70,19 +70,29 @@ export default function CashFlowTable({ monthlyData }: CashFlowTableProps) {
                     {formatCurrency(month.aiCosts)}
                   </td>
                   <td className="table-cell text-orange-600 dark:text-orange-400">
-                    {month.capitalPurchase > 0 ? formatCurrency(month.capitalPurchase) : '-'}
+                    {month.capitalPurchase > 0
+                      ? formatCurrency(month.capitalPurchase)
+                      : "-"}
                   </td>
                   <td className="table-cell font-medium text-danger-700 dark:text-danger-300">
                     {formatCurrency(month.totalExpenses)}
                   </td>
-                  <td className={`table-cell font-bold ${
-                    month.profit >= 0 ? 'text-success-700 dark:text-success-300' : 'text-danger-700 dark:text-danger-300'
-                  }`}>
+                  <td
+                    className={`table-cell font-bold ${
+                      month.profit >= 0
+                        ? "text-success-700 dark:text-success-300"
+                        : "text-danger-700 dark:text-danger-300"
+                    }`}
+                  >
                     {formatCurrency(month.profit)}
                   </td>
-                  <td className={`table-cell font-bold ${
-                    month.cashOnHand >= 0 ? 'text-primary-700 dark:text-primary-300' : 'text-danger-700 dark:text-danger-300'
-                  }`}>
+                  <td
+                    className={`table-cell font-bold ${
+                      month.cashOnHand >= 0
+                        ? "text-primary-700 dark:text-primary-300"
+                        : "text-danger-700 dark:text-danger-300"
+                    }`}
+                  >
                     {formatCurrency(month.cashOnHand)}
                   </td>
                 </tr>
@@ -90,40 +100,42 @@ export default function CashFlowTable({ monthlyData }: CashFlowTableProps) {
             </tbody>
           </table>
         </div>
-        
+
         {/* Cash Flow Alerts */}
         <div className="p-6 border-t border-gray-200 dark:border-gray-700">
-          {monthlyData.some(month => month.cashOnHand < 0) && (
+          {monthlyData.some((month) => month.cashOnHand < 0) && (
             <div className="alert alert-danger mb-4">
               <div className="flex items-start">
-                <span className="text-danger-600 dark:text-danger-400 mr-2">⚠️</span>
+                <span className="text-danger-600 dark:text-danger-400 mr-2">
+                  ⚠️
+                </span>
                 <div>
                   <strong>Cash Flow Warning!</strong>
                   <p className="mt-1">
-                    Your business will have negative cash flow in{' '}
+                    Your business will have negative cash flow in{" "}
                     {monthlyData
-                      .filter(month => month.cashOnHand < 0)
-                      .map(month => month.date)
-                      .join(', ')
-                    }.
+                      .filter((month) => month.cashOnHand < 0)
+                      .map((month) => month.date)
+                      .join(", ")}
+                    .
                   </p>
                 </div>
               </div>
             </div>
           )}
-          
-          {monthlyData.some(month => month.profit >= 0) && (
+
+          {monthlyData.some((month) => month.profit >= 0) && (
             <div className="alert alert-success">
               <div className="flex items-start">
-                <span className="text-success-600 dark:text-success-400 mr-2">✅</span>
+                <span className="text-success-600 dark:text-success-400 mr-2">
+                  ✅
+                </span>
                 <div>
                   <strong>Profitable Months Detected!</strong>
                   <p className="mt-1">
-                    Your business shows profitability in{' '}
-                    {monthlyData
-                      .filter(month => month.profit >= 0)
-                      .length
-                    } out of 12 months.
+                    Your business shows profitability in{" "}
+                    {monthlyData.filter((month) => month.profit >= 0).length}{" "}
+                    out of 12 months.
                   </p>
                 </div>
               </div>

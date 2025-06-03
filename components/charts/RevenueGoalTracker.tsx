@@ -1,6 +1,6 @@
-import React from 'react';
-import { RevenueGoalData, MonthlyData } from '@/types';
-import { formatCurrency, formatNumber } from '@/lib/calculations';
+import React from "react";
+import { RevenueGoalData, MonthlyData } from "@/types";
+import { formatCurrency, formatNumber } from "@/lib/calculations/calculations";
 import {
   LineChart,
   Line,
@@ -13,7 +13,7 @@ import {
   Legend,
   ResponsiveContainer,
   ReferenceLine,
-} from 'recharts';
+} from "recharts";
 
 interface RevenueGoalTrackerProps {
   revenueGoalData: RevenueGoalData;
@@ -24,7 +24,9 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-white dark:bg-gray-800 p-4 border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg">
-        <p className="font-medium text-gray-900 dark:text-gray-100 mb-2">{label}</p>
+        <p className="font-medium text-gray-900 dark:text-gray-100 mb-2">
+          {label}
+        </p>
         {payload.map((entry: any, index: number) => (
           <p key={index} className="text-sm" style={{ color: entry.color }}>
             {entry.name}: {formatCurrency(entry.value)}
@@ -36,7 +38,10 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
-export default function RevenueGoalTracker({ revenueGoalData, monthlyData }: RevenueGoalTrackerProps) {
+export default function RevenueGoalTracker({
+  revenueGoalData,
+  monthlyData,
+}: RevenueGoalTrackerProps) {
   if (!revenueGoalData || !monthlyData) {
     return (
       <div className="card">
@@ -57,20 +62,26 @@ export default function RevenueGoalTracker({ revenueGoalData, monthlyData }: Rev
     const cumulativeRevenue = monthlyData
       .slice(0, index + 1)
       .reduce((sum, m) => sum + m.revenue, 0);
-    
-    const goalProgress = (revenueGoalData.requiredAnnualRevenue / 12) * (index + 1);
-    
+
+    const goalProgress =
+      (revenueGoalData.requiredAnnualRevenue / 12) * (index + 1);
+
     return {
       month: month.date,
       monthlyRevenue: month.revenue,
       cumulativeRevenue,
       goalProgress,
-      projectedRevenue: (revenueGoalData.projectedAnnualRevenue / 12) * (index + 1),
+      projectedRevenue:
+        (revenueGoalData.projectedAnnualRevenue / 12) * (index + 1),
     };
   });
 
-  const progressColor = revenueGoalData.progressPercentage >= 100 ? 'success' : 
-                       revenueGoalData.progressPercentage >= 75 ? 'warning' : 'danger';
+  const progressColor =
+    revenueGoalData.progressPercentage >= 100
+      ? "success"
+      : revenueGoalData.progressPercentage >= 75
+        ? "warning"
+        : "danger";
 
   return (
     <div className="space-y-6">
@@ -87,7 +98,9 @@ export default function RevenueGoalTracker({ revenueGoalData, monthlyData }: Rev
                   <span className="text-2xl">💰</span>
                 </div>
                 <div className="ml-3">
-                  <p className="text-sm font-medium text-primary-600 dark:text-primary-400">Current Annual Revenue</p>
+                  <p className="text-sm font-medium text-primary-600 dark:text-primary-400">
+                    Current Annual Revenue
+                  </p>
                   <p className="text-2xl font-bold text-primary-900 dark:text-primary-100">
                     {formatCurrency(revenueGoalData.currentAnnualRevenue)}
                   </p>
@@ -101,7 +114,9 @@ export default function RevenueGoalTracker({ revenueGoalData, monthlyData }: Rev
                   <span className="text-2xl">🚀</span>
                 </div>
                 <div className="ml-3">
-                  <p className="text-sm font-medium text-purple-600 dark:text-purple-400">Projected Annual</p>
+                  <p className="text-sm font-medium text-purple-600 dark:text-purple-400">
+                    Projected Annual
+                  </p>
                   <p className="text-2xl font-bold text-purple-900 dark:text-purple-100">
                     {formatCurrency(revenueGoalData.projectedAnnualRevenue)}
                   </p>
@@ -115,7 +130,9 @@ export default function RevenueGoalTracker({ revenueGoalData, monthlyData }: Rev
                   <span className="text-2xl">👥</span>
                 </div>
                 <div className="ml-3">
-                  <p className="text-sm font-medium text-orange-600 dark:text-orange-400">Clients Needed for Goal</p>
+                  <p className="text-sm font-medium text-orange-600 dark:text-orange-400">
+                    Clients Needed for Goal
+                  </p>
                   <p className="text-2xl font-bold text-orange-900 dark:text-orange-100">
                     {formatNumber(revenueGoalData.requiredClientsForGoal)}
                   </p>
@@ -129,9 +146,11 @@ export default function RevenueGoalTracker({ revenueGoalData, monthlyData }: Rev
                   <span className="text-2xl">⏱️</span>
                 </div>
                 <div className="ml-3">
-                  <p className="text-sm font-medium text-green-600 dark:text-green-400">Months to Goal</p>
+                  <p className="text-sm font-medium text-green-600 dark:text-green-400">
+                    Months to Goal
+                  </p>
                   <p className="text-2xl font-bold text-green-900 dark:text-green-100">
-                    {revenueGoalData.monthsToReachGoal || 'N/A'}
+                    {revenueGoalData.monthsToReachGoal || "N/A"}
                   </p>
                 </div>
               </div>
@@ -141,23 +160,33 @@ export default function RevenueGoalTracker({ revenueGoalData, monthlyData }: Rev
           {/* Progress Bar */}
           <div className="mb-8">
             <div className="flex justify-between items-center mb-2">
-              <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">Progress to $1M Goal</h3>
-              <span className={`text-sm font-medium ${
-                progressColor === 'success' ? 'text-success-600 dark:text-success-400' :
-                progressColor === 'warning' ? 'text-warning-600 dark:text-warning-400' :
-                'text-danger-600 dark:text-danger-400'
-              }`}>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                Progress to $1M Goal
+              </h3>
+              <span
+                className={`text-sm font-medium ${
+                  progressColor === "success"
+                    ? "text-success-600 dark:text-success-400"
+                    : progressColor === "warning"
+                      ? "text-warning-600 dark:text-warning-400"
+                      : "text-danger-600 dark:text-danger-400"
+                }`}
+              >
                 {revenueGoalData.progressPercentage.toFixed(1)}%
               </span>
             </div>
             <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-4">
               <div
                 className={`h-4 rounded-full transition-all duration-500 ${
-                  progressColor === 'success' ? 'bg-success-600 dark:bg-success-500' :
-                  progressColor === 'warning' ? 'bg-warning-500 dark:bg-warning-400' :
-                  'bg-danger-500 dark:bg-danger-400'
+                  progressColor === "success"
+                    ? "bg-success-600 dark:bg-success-500"
+                    : progressColor === "warning"
+                      ? "bg-warning-500 dark:bg-warning-400"
+                      : "bg-danger-500 dark:bg-danger-400"
                 }`}
-                style={{ width: `${Math.min(revenueGoalData.progressPercentage, 100)}%` }}
+                style={{
+                  width: `${Math.min(revenueGoalData.progressPercentage, 100)}%`,
+                }}
               ></div>
             </div>
             <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400 mt-1">
@@ -171,15 +200,27 @@ export default function RevenueGoalTracker({ revenueGoalData, monthlyData }: Rev
             <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mb-6">
               <div className="flex items-start">
                 <div className="flex-shrink-0">
-                  <span className="text-yellow-600 dark:text-yellow-400 text-xl">📈</span>
+                  <span className="text-yellow-600 dark:text-yellow-400 text-xl">
+                    📈
+                  </span>
                 </div>
                 <div className="ml-3">
-                  <h4 className="font-medium text-yellow-800 dark:text-yellow-200">Growth Required</h4>
+                  <h4 className="font-medium text-yellow-800 dark:text-yellow-200">
+                    Growth Required
+                  </h4>
                   <p className="text-sm text-yellow-700 dark:text-yellow-300 mt-1">
-                    You need <strong>{formatNumber(revenueGoalData.additionalClientsNeeded)} additional clients per month</strong> on average to reach your $1M annual revenue goal.
+                    You need{" "}
+                    <strong>
+                      {formatNumber(revenueGoalData.additionalClientsNeeded)}{" "}
+                      additional clients per month
+                    </strong>{" "}
+                    on average to reach your $1M annual revenue goal.
                   </p>
                   <p className="text-sm text-yellow-700 dark:text-yellow-300 mt-1">
-                    Monthly revenue target: <strong>{formatCurrency(revenueGoalData.monthlyGoalRevenue)}</strong>
+                    Monthly revenue target:{" "}
+                    <strong>
+                      {formatCurrency(revenueGoalData.monthlyGoalRevenue)}
+                    </strong>
                   </p>
                 </div>
               </div>
@@ -190,17 +231,23 @@ export default function RevenueGoalTracker({ revenueGoalData, monthlyData }: Rev
 
       {/* Revenue Trajectory Chart */}
       <div className="chart-container">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">📈 Revenue Trajectory vs $1M Goal</h3>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+          📈 Revenue Trajectory vs $1M Goal
+        </h3>
         <ResponsiveContainer width="100%" height={400}>
           <LineChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f0f4f8" className="dark:stroke-gray-600" />
-            <XAxis 
-              dataKey="month" 
+            <CartesianGrid
+              strokeDasharray="3 3"
+              stroke="#f0f4f8"
+              className="dark:stroke-gray-600"
+            />
+            <XAxis
+              dataKey="month"
               stroke="#64748b"
               className="dark:stroke-gray-400"
               fontSize={12}
             />
-            <YAxis 
+            <YAxis
               stroke="#64748b"
               className="dark:stroke-gray-400"
               fontSize={12}
@@ -208,7 +255,7 @@ export default function RevenueGoalTracker({ revenueGoalData, monthlyData }: Rev
             />
             <Tooltip content={<CustomTooltip />} />
             <Legend />
-            
+
             {/* Goal line */}
             <Line
               type="monotone"
@@ -219,7 +266,7 @@ export default function RevenueGoalTracker({ revenueGoalData, monthlyData }: Rev
               name="$1M Goal Track"
               dot={false}
             />
-            
+
             {/* Actual cumulative revenue */}
             <Line
               type="monotone"
@@ -230,7 +277,7 @@ export default function RevenueGoalTracker({ revenueGoalData, monthlyData }: Rev
               dot={{ r: 4 }}
               activeDot={{ r: 6 }}
             />
-            
+
             {/* Projected revenue */}
             <Line
               type="monotone"
@@ -241,7 +288,7 @@ export default function RevenueGoalTracker({ revenueGoalData, monthlyData }: Rev
               name="Projected Track"
               dot={false}
             />
-            
+
             {/* Reference line at $1M */}
             <ReferenceLine y={1000000} stroke="#ef4444" strokeDasharray="2 2" />
           </LineChart>
@@ -250,24 +297,30 @@ export default function RevenueGoalTracker({ revenueGoalData, monthlyData }: Rev
 
       {/* Monthly Revenue vs Goal Chart */}
       <div className="chart-container">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">💰 Monthly Revenue vs Goal</h3>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+          💰 Monthly Revenue vs Goal
+        </h3>
         <ResponsiveContainer width="100%" height={300}>
           <AreaChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f0f4f8" className="dark:stroke-gray-600" />
-            <XAxis 
-              dataKey="month" 
+            <CartesianGrid
+              strokeDasharray="3 3"
+              stroke="#f0f4f8"
+              className="dark:stroke-gray-600"
+            />
+            <XAxis
+              dataKey="month"
               stroke="#64748b"
               className="dark:stroke-gray-400"
               fontSize={10}
             />
-            <YAxis 
+            <YAxis
               stroke="#64748b"
               className="dark:stroke-gray-400"
               fontSize={10}
               tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
             />
             <Tooltip content={<CustomTooltip />} />
-            
+
             <Area
               type="monotone"
               dataKey="monthlyRevenue"
@@ -277,8 +330,12 @@ export default function RevenueGoalTracker({ revenueGoalData, monthlyData }: Rev
               name="Monthly Revenue"
               strokeWidth={2}
             />
-            
-            <ReferenceLine y={revenueGoalData.monthlyGoalRevenue} stroke="#ef4444" strokeDasharray="2 2" />
+
+            <ReferenceLine
+              y={revenueGoalData.monthlyGoalRevenue}
+              stroke="#ef4444"
+              strokeDasharray="2 2"
+            />
           </AreaChart>
         </ResponsiveContainer>
       </div>
@@ -294,53 +351,86 @@ export default function RevenueGoalTracker({ revenueGoalData, monthlyData }: Rev
             <div className="space-y-3 text-sm">
               {revenueGoalData.progressPercentage >= 100 && (
                 <div className="flex items-start">
-                  <span className="text-success-500 dark:text-success-400 mr-2 mt-0.5">•</span>
+                  <span className="text-success-500 dark:text-success-400 mr-2 mt-0.5">
+                    •
+                  </span>
                   <span className="text-blue-800 dark:text-blue-200">
-                    Congratulations! You've already achieved your $1M annual revenue goal with {formatCurrency(revenueGoalData.currentAnnualRevenue)}.
+                    Congratulations! You've already achieved your $1M annual
+                    revenue goal with{" "}
+                    {formatCurrency(revenueGoalData.currentAnnualRevenue)}.
                   </span>
                 </div>
               )}
-              
-              {revenueGoalData.progressPercentage < 100 && revenueGoalData.progressPercentage >= 75 && (
-                <div className="flex items-start">
-                  <span className="text-success-500 dark:text-success-400 mr-2 mt-0.5">•</span>
-                  <span className="text-blue-800 dark:text-blue-200">
-                    Great progress! You're {revenueGoalData.progressPercentage.toFixed(1)}% of the way to your $1M goal. Only {formatCurrency(1000000 - revenueGoalData.currentAnnualRevenue)} to go.
-                  </span>
-                </div>
-              )}
-              
-              {revenueGoalData.progressPercentage < 75 && revenueGoalData.progressPercentage >= 25 && (
-                <div className="flex items-start">
-                  <span className="text-warning-500 dark:text-warning-400 mr-2 mt-0.5">•</span>
-                  <span className="text-blue-800 dark:text-blue-200">
-                    You're making steady progress at {revenueGoalData.progressPercentage.toFixed(1)}% of your $1M goal. Focus on client acquisition and retention to accelerate growth.
-                  </span>
-                </div>
-              )}
-              
+
+              {revenueGoalData.progressPercentage < 100 &&
+                revenueGoalData.progressPercentage >= 75 && (
+                  <div className="flex items-start">
+                    <span className="text-success-500 dark:text-success-400 mr-2 mt-0.5">
+                      •
+                    </span>
+                    <span className="text-blue-800 dark:text-blue-200">
+                      Great progress! You're{" "}
+                      {revenueGoalData.progressPercentage.toFixed(1)}% of the
+                      way to your $1M goal. Only{" "}
+                      {formatCurrency(
+                        1000000 - revenueGoalData.currentAnnualRevenue,
+                      )}{" "}
+                      to go.
+                    </span>
+                  </div>
+                )}
+
+              {revenueGoalData.progressPercentage < 75 &&
+                revenueGoalData.progressPercentage >= 25 && (
+                  <div className="flex items-start">
+                    <span className="text-warning-500 dark:text-warning-400 mr-2 mt-0.5">
+                      •
+                    </span>
+                    <span className="text-blue-800 dark:text-blue-200">
+                      You're making steady progress at{" "}
+                      {revenueGoalData.progressPercentage.toFixed(1)}% of your
+                      $1M goal. Focus on client acquisition and retention to
+                      accelerate growth.
+                    </span>
+                  </div>
+                )}
+
               {revenueGoalData.progressPercentage < 25 && (
                 <div className="flex items-start">
-                  <span className="text-danger-500 dark:text-danger-400 mr-2 mt-0.5">•</span>
+                  <span className="text-danger-500 dark:text-danger-400 mr-2 mt-0.5">
+                    •
+                  </span>
                   <span className="text-blue-800 dark:text-blue-200">
-                    You need significant growth to reach $1M. Consider strategies like pricing optimization, market expansion, or product enhancement.
+                    You need significant growth to reach $1M. Consider
+                    strategies like pricing optimization, market expansion, or
+                    product enhancement.
                   </span>
                 </div>
               )}
-              
-              {revenueGoalData.monthsToReachGoal && revenueGoalData.monthsToReachGoal <= 24 && (
-                <div className="flex items-start">
-                  <span className="text-primary-500 dark:text-primary-400 mr-2 mt-0.5">•</span>
-                  <span className="text-blue-800 dark:text-blue-200">
-                    Based on current trajectory, you could reach $1M in approximately {revenueGoalData.monthsToReachGoal} months if growth continues at this pace.
-                  </span>
-                </div>
-              )}
-              
+
+              {revenueGoalData.monthsToReachGoal &&
+                revenueGoalData.monthsToReachGoal <= 24 && (
+                  <div className="flex items-start">
+                    <span className="text-primary-500 dark:text-primary-400 mr-2 mt-0.5">
+                      •
+                    </span>
+                    <span className="text-blue-800 dark:text-blue-200">
+                      Based on current trajectory, you could reach $1M in
+                      approximately {revenueGoalData.monthsToReachGoal} months
+                      if growth continues at this pace.
+                    </span>
+                  </div>
+                )}
+
               <div className="flex items-start">
-                <span className="text-purple-500 dark:text-purple-400 mr-2 mt-0.5">•</span>
+                <span className="text-purple-500 dark:text-purple-400 mr-2 mt-0.5">
+                  •
+                </span>
                 <span className="text-blue-800 dark:text-blue-200">
-                  To hit your monthly target of {formatCurrency(revenueGoalData.monthlyGoalRevenue)}, you need approximately {revenueGoalData.requiredClientsForGoal} clients per month.
+                  To hit your monthly target of{" "}
+                  {formatCurrency(revenueGoalData.monthlyGoalRevenue)}, you need
+                  approximately {revenueGoalData.requiredClientsForGoal} clients
+                  per month.
                 </span>
               </div>
             </div>

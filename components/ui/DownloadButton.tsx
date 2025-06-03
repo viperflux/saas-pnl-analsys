@@ -1,25 +1,29 @@
-import React from 'react';
-import { FinancialData, CalculationResults } from '@/types';
-import { exportToCSV, downloadCSV } from '@/lib/calculations';
+import React from "react";
+import { FinancialData, CalculationResults } from "@/types";
+import { exportToCSV, downloadCSV } from "@/lib/calculations/calculations";
 
 interface DownloadButtonProps {
   config: FinancialData;
   results: CalculationResults;
 }
 
-export default function DownloadButton({ config, results }: DownloadButtonProps) {
+export default function DownloadButton({
+  config,
+  results,
+}: DownloadButtonProps) {
   const handleDownload = () => {
     try {
       const csvContent = exportToCSV(config, results);
-      const filename = `saas-financial-analysis-${new Date().toISOString().split('T')[0]}.csv`;
+      const filename = `saas-financial-analysis-${new Date().toISOString().split("T")[0]}.csv`;
       downloadCSV(filename, csvContent);
     } catch (error) {
-      console.error('Failed to download CSV:', error);
-      alert('Failed to download the report. Please try again.');
+      console.error("Failed to download CSV:", error);
+      alert("Failed to download the report. Please try again.");
     }
   };
 
-  const isDataAvailable = results && results.monthlyData && results.monthlyData.length > 0;
+  const isDataAvailable =
+    results && results.monthlyData && results.monthlyData.length > 0;
 
   return (
     <div className="card">
@@ -29,29 +33,42 @@ export default function DownloadButton({ config, results }: DownloadButtonProps)
       <div className="card-body">
         <div className="space-y-4">
           <div className="bg-gray-50 p-4 rounded-lg">
-            <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">Export Options</h3>
+            <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
+              Export Options
+            </h3>
             <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
-              Download your complete financial analysis as a CSV file. The export includes:
+              Download your complete financial analysis as a CSV file. The
+              export includes:
             </p>
             <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1 mb-4">
               <li className="flex items-center">
-                <span className="text-green-500 dark:text-green-400 mr-2">✓</span>
+                <span className="text-green-500 dark:text-green-400 mr-2">
+                  ✓
+                </span>
                 Monthly breakdown of all metrics
               </li>
               <li className="flex items-center">
-                <span className="text-green-500 dark:text-green-400 mr-2">✓</span>
+                <span className="text-green-500 dark:text-green-400 mr-2">
+                  ✓
+                </span>
                 Revenue, expenses, and profit calculations
               </li>
               <li className="flex items-center">
-                <span className="text-green-500 dark:text-green-400 mr-2">✓</span>
+                <span className="text-green-500 dark:text-green-400 mr-2">
+                  ✓
+                </span>
                 Client growth and churn data
               </li>
               <li className="flex items-center">
-                <span className="text-green-500 dark:text-green-400 mr-2">✓</span>
+                <span className="text-green-500 dark:text-green-400 mr-2">
+                  ✓
+                </span>
                 Cash flow projections
               </li>
               <li className="flex items-center">
-                <span className="text-green-500 dark:text-green-400 mr-2">✓</span>
+                <span className="text-green-500 dark:text-green-400 mr-2">
+                  ✓
+                </span>
                 Summary statistics and insights
               </li>
             </ul>
@@ -59,9 +76,12 @@ export default function DownloadButton({ config, results }: DownloadButtonProps)
 
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-900 dark:text-gray-100">CSV Report</p>
+              <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                CSV Report
+              </p>
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                Compatible with Excel, Google Sheets, and other spreadsheet applications
+                Compatible with Excel, Google Sheets, and other spreadsheet
+                applications
               </p>
             </div>
             <button
@@ -69,8 +89,8 @@ export default function DownloadButton({ config, results }: DownloadButtonProps)
               disabled={!isDataAvailable}
               className={`inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white transition-colors ${
                 isDataAvailable
-                  ? 'bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500'
-                  : 'bg-gray-400 cursor-not-allowed'
+                  ? "bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                  : "bg-gray-400 cursor-not-allowed"
               }`}
             >
               <svg
@@ -109,7 +129,9 @@ export default function DownloadButton({ config, results }: DownloadButtonProps)
                 </div>
                 <div className="ml-3">
                   <p className="text-sm text-yellow-800 dark:text-yellow-200">
-                    No data available for export. Please ensure your configuration is complete and calculations have been performed.
+                    No data available for export. Please ensure your
+                    configuration is complete and calculations have been
+                    performed.
                   </p>
                 </div>
               </div>

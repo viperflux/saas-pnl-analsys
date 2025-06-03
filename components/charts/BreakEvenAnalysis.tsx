@@ -1,6 +1,6 @@
-import React from 'react';
-import { BreakEvenData } from '@/types';
-import { formatCurrency, formatNumber } from '@/lib/calculations';
+import React from "react";
+import { BreakEvenData } from "@/types";
+import { formatCurrency, formatNumber } from "@/lib/calculations/calculations";
 import {
   LineChart,
   Line,
@@ -13,20 +13,21 @@ import {
   Legend,
   ResponsiveContainer,
   Cell,
-} from 'recharts';
+} from "recharts";
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-white dark:bg-gray-800 p-4 border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg">
-        <p className="font-medium text-gray-900 dark:text-gray-100 mb-2">{label}</p>
+        <p className="font-medium text-gray-900 dark:text-gray-100 mb-2">
+          {label}
+        </p>
         {payload.map((entry: any, index: number) => (
           <p key={index} className="text-sm" style={{ color: entry.color }}>
-            {entry.name}: {
-              entry.name.includes('Clients') || entry.name.includes('clients') ? 
-                formatNumber(entry.value) : 
-                formatCurrency(entry.value)
-            }
+            {entry.name}:{" "}
+            {entry.name.includes("Clients") || entry.name.includes("clients")
+              ? formatNumber(entry.value)
+              : formatCurrency(entry.value)}
           </p>
         ))}
       </div>
@@ -39,7 +40,9 @@ interface BreakEvenAnalysisProps {
   breakEvenData: BreakEvenData[];
 }
 
-export default function BreakEvenAnalysis({ breakEvenData }: BreakEvenAnalysisProps) {
+export default function BreakEvenAnalysis({
+  breakEvenData,
+}: BreakEvenAnalysisProps) {
   if (!breakEvenData || breakEvenData.length === 0) {
     return (
       <div className="card">
@@ -55,9 +58,13 @@ export default function BreakEvenAnalysis({ breakEvenData }: BreakEvenAnalysisPr
     );
   }
 
-  const breakEvenAchievedMonths = breakEvenData.filter(month => month.isBreakEven).length;
-  const firstBreakEvenMonth = breakEvenData.find(month => month.isBreakEven)?.month || null;
-  const avgRequiredClients = breakEvenData.reduce((sum, month) => sum + month.requiredClients, 0) / 12;
+  const breakEvenAchievedMonths = breakEvenData.filter(
+    (month) => month.isBreakEven,
+  ).length;
+  const firstBreakEvenMonth =
+    breakEvenData.find((month) => month.isBreakEven)?.month || null;
+  const avgRequiredClients =
+    breakEvenData.reduce((sum, month) => sum + month.requiredClients, 0) / 12;
 
   return (
     <div className="card">
@@ -73,9 +80,13 @@ export default function BreakEvenAnalysis({ breakEvenData }: BreakEvenAnalysisPr
                 <span className="text-2xl">🎯</span>
               </div>
               <div className="ml-3">
-                <p className="text-sm font-medium text-blue-600 dark:text-blue-400">First Break-Even</p>
+                <p className="text-sm font-medium text-blue-600 dark:text-blue-400">
+                  First Break-Even
+                </p>
                 <p className="text-2xl font-bold text-blue-900 dark:text-blue-100">
-                  {firstBreakEvenMonth ? `Month ${firstBreakEvenMonth}` : 'Not achieved'}
+                  {firstBreakEvenMonth
+                    ? `Month ${firstBreakEvenMonth}`
+                    : "Not achieved"}
                 </p>
               </div>
             </div>
@@ -87,7 +98,9 @@ export default function BreakEvenAnalysis({ breakEvenData }: BreakEvenAnalysisPr
                 <span className="text-2xl">✅</span>
               </div>
               <div className="ml-3">
-                <p className="text-sm font-medium text-success-600 dark:text-success-400">Profitable Months</p>
+                <p className="text-sm font-medium text-success-600 dark:text-success-400">
+                  Profitable Months
+                </p>
                 <p className="text-2xl font-bold text-success-900 dark:text-success-100">
                   {breakEvenAchievedMonths}/12
                 </p>
@@ -101,7 +114,9 @@ export default function BreakEvenAnalysis({ breakEvenData }: BreakEvenAnalysisPr
                 <span className="text-2xl">👥</span>
               </div>
               <div className="ml-3">
-                <p className="text-sm font-medium text-purple-600 dark:text-purple-400">Avg Required Clients</p>
+                <p className="text-sm font-medium text-purple-600 dark:text-purple-400">
+                  Avg Required Clients
+                </p>
                 <p className="text-2xl font-bold text-purple-900 dark:text-purple-100">
                   {formatNumber(Math.round(avgRequiredClients))}
                 </p>
@@ -116,29 +131,35 @@ export default function BreakEvenAnalysis({ breakEvenData }: BreakEvenAnalysisPr
             📊 Break-Even Point Analysis
           </h3>
           <ResponsiveContainer width="100%" height={350}>
-            <LineChart data={breakEvenData.map(month => ({
-              month: `Month ${month.month}`,
-              actualClients: month.actualClients,
-              requiredClients: month.requiredClients,
-              actualRevenue: month.actualRevenue,
-              breakEvenRevenue: month.breakEvenRevenue,
-              profit: month.isBreakEven ? 1 : 0,
-            }))}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f4f8" className="dark:stroke-gray-600" />
-              <XAxis 
-                dataKey="month" 
+            <LineChart
+              data={breakEvenData.map((month) => ({
+                month: `Month ${month.month}`,
+                actualClients: month.actualClients,
+                requiredClients: month.requiredClients,
+                actualRevenue: month.actualRevenue,
+                breakEvenRevenue: month.breakEvenRevenue,
+                profit: month.isBreakEven ? 1 : 0,
+              }))}
+            >
+              <CartesianGrid
+                strokeDasharray="3 3"
+                stroke="#f0f4f8"
+                className="dark:stroke-gray-600"
+              />
+              <XAxis
+                dataKey="month"
                 stroke="#64748b"
                 className="dark:stroke-gray-400"
                 fontSize={10}
               />
-              <YAxis 
+              <YAxis
                 yAxisId="clients"
                 orientation="left"
                 stroke="#64748b"
                 className="dark:stroke-gray-400"
                 fontSize={10}
               />
-              <YAxis 
+              <YAxis
                 yAxisId="revenue"
                 orientation="right"
                 stroke="#64748b"
@@ -148,7 +169,7 @@ export default function BreakEvenAnalysis({ breakEvenData }: BreakEvenAnalysisPr
               />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
-              
+
               {/* Break-even threshold line */}
               <Line
                 yAxisId="clients"
@@ -160,7 +181,7 @@ export default function BreakEvenAnalysis({ breakEvenData }: BreakEvenAnalysisPr
                 name="Required Clients"
                 dot={false}
               />
-              
+
               {/* Actual clients line */}
               <Line
                 yAxisId="clients"
@@ -172,7 +193,7 @@ export default function BreakEvenAnalysis({ breakEvenData }: BreakEvenAnalysisPr
                 dot={{ r: 4 }}
                 activeDot={{ r: 6 }}
               />
-              
+
               {/* Revenue lines */}
               <Line
                 yAxisId="revenue"
@@ -184,7 +205,7 @@ export default function BreakEvenAnalysis({ breakEvenData }: BreakEvenAnalysisPr
                 name="Break-Even Revenue"
                 dot={false}
               />
-              
+
               <Line
                 yAxisId="revenue"
                 type="monotone"
@@ -225,15 +246,16 @@ export default function BreakEvenAnalysis({ breakEvenData }: BreakEvenAnalysisPr
                     {formatNumber(month.requiredClients)}
                   </td>
                   <td className="table-cell">
-                    <span className={`font-medium ${
-                      month.actualClients >= month.requiredClients
-                        ? 'text-success-600 dark:text-success-400'
-                        : 'text-danger-600 dark:text-danger-400'
-                    }`}>
-                      {month.actualClients >= month.requiredClients 
+                    <span
+                      className={`font-medium ${
+                        month.actualClients >= month.requiredClients
+                          ? "text-success-600 dark:text-success-400"
+                          : "text-danger-600 dark:text-danger-400"
+                      }`}
+                    >
+                      {month.actualClients >= month.requiredClients
                         ? `+${month.actualClients - month.requiredClients}`
-                        : `${month.actualClients - month.requiredClients}`
-                      }
+                        : `${month.actualClients - month.requiredClients}`}
                     </span>
                   </td>
                   <td className="table-cell font-medium text-success-700 dark:text-success-300">
@@ -249,12 +271,14 @@ export default function BreakEvenAnalysis({ breakEvenData }: BreakEvenAnalysisPr
                           <div
                             className={`h-2 rounded-full transition-all duration-300 ${
                               month.percentToBreakEven >= 100
-                                ? 'bg-success-600 dark:bg-success-500'
+                                ? "bg-success-600 dark:bg-success-500"
                                 : month.percentToBreakEven >= 75
-                                ? 'bg-yellow-500 dark:bg-yellow-400'
-                                : 'bg-danger-500 dark:bg-danger-400'
+                                  ? "bg-yellow-500 dark:bg-yellow-400"
+                                  : "bg-danger-500 dark:bg-danger-400"
                             }`}
-                            style={{ width: `${Math.min(month.percentToBreakEven, 100)}%` }}
+                            style={{
+                              width: `${Math.min(month.percentToBreakEven, 100)}%`,
+                            }}
                           ></div>
                         </div>
                       </div>
@@ -264,12 +288,14 @@ export default function BreakEvenAnalysis({ breakEvenData }: BreakEvenAnalysisPr
                     </div>
                   </td>
                   <td className="table-cell">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      month.isBreakEven
-                        ? 'bg-success-100 text-success-800 dark:bg-success-900/20 dark:text-success-400'
-                        : 'bg-danger-100 text-danger-800 dark:bg-danger-900/20 dark:text-danger-400'
-                    }`}>
-                      {month.isBreakEven ? '✅ Profitable' : '❌ Loss'}
+                    <span
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        month.isBreakEven
+                          ? "bg-success-100 text-success-800 dark:bg-success-900/20 dark:text-success-400"
+                          : "bg-danger-100 text-danger-800 dark:bg-danger-900/20 dark:text-danger-400"
+                      }`}
+                    >
+                      {month.isBreakEven ? "✅ Profitable" : "❌ Loss"}
                     </span>
                   </td>
                 </tr>
@@ -287,43 +313,65 @@ export default function BreakEvenAnalysis({ breakEvenData }: BreakEvenAnalysisPr
           <div className="space-y-3 text-sm">
             {firstBreakEvenMonth && (
               <div className="flex items-start">
-                <span className="text-success-500 dark:text-success-400 mr-2 mt-0.5">•</span>
+                <span className="text-success-500 dark:text-success-400 mr-2 mt-0.5">
+                  •
+                </span>
                 <span className="text-blue-800 dark:text-blue-200">
-                  Your business first achieves break-even in month {firstBreakEvenMonth}. This is {firstBreakEvenMonth <= 6 ? 'relatively quick' : 'taking some time'}.
+                  Your business first achieves break-even in month{" "}
+                  {firstBreakEvenMonth}. This is{" "}
+                  {firstBreakEvenMonth <= 6
+                    ? "relatively quick"
+                    : "taking some time"}
+                  .
                 </span>
               </div>
             )}
-            
+
             {!firstBreakEvenMonth && (
               <div className="flex items-start">
-                <span className="text-danger-500 dark:text-danger-400 mr-2 mt-0.5">•</span>
+                <span className="text-danger-500 dark:text-danger-400 mr-2 mt-0.5">
+                  •
+                </span>
                 <span className="text-blue-800 dark:text-blue-200">
-                  Break-even is not achieved within 12 months. Consider increasing prices, reducing costs, or accelerating client acquisition.
+                  Break-even is not achieved within 12 months. Consider
+                  increasing prices, reducing costs, or accelerating client
+                  acquisition.
                 </span>
               </div>
             )}
-            
+
             <div className="flex items-start">
-              <span className="text-primary-500 dark:text-primary-400 mr-2 mt-0.5">•</span>
+              <span className="text-primary-500 dark:text-primary-400 mr-2 mt-0.5">
+                •
+              </span>
               <span className="text-blue-800 dark:text-blue-200">
-                On average, you need {Math.round(avgRequiredClients)} clients per month to break even. Your current trajectory shows {breakEvenAchievedMonths} profitable months out of 12.
+                On average, you need {Math.round(avgRequiredClients)} clients
+                per month to break even. Your current trajectory shows{" "}
+                {breakEvenAchievedMonths} profitable months out of 12.
               </span>
             </div>
-            
+
             {breakEvenAchievedMonths < 6 && (
               <div className="flex items-start">
-                <span className="text-warning-500 dark:text-warning-400 mr-2 mt-0.5">•</span>
+                <span className="text-warning-500 dark:text-warning-400 mr-2 mt-0.5">
+                  •
+                </span>
                 <span className="text-blue-800 dark:text-blue-200">
-                  Less than half of your months are profitable. Focus on client retention (reducing churn) and optimizing your pricing strategy.
+                  Less than half of your months are profitable. Focus on client
+                  retention (reducing churn) and optimizing your pricing
+                  strategy.
                 </span>
               </div>
             )}
-            
+
             {breakEvenAchievedMonths >= 8 && (
               <div className="flex items-start">
-                <span className="text-success-500 dark:text-success-400 mr-2 mt-0.5">•</span>
+                <span className="text-success-500 dark:text-success-400 mr-2 mt-0.5">
+                  •
+                </span>
                 <span className="text-blue-800 dark:text-blue-200">
-                  Strong performance! Most of your months are profitable. Consider strategies for scaling and growth acceleration.
+                  Strong performance! Most of your months are profitable.
+                  Consider strategies for scaling and growth acceleration.
                 </span>
               </div>
             )}
