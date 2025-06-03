@@ -49,42 +49,48 @@ export const FEATURE_ADDONS: FeatureAddon[] = [
     name: 'Advanced Analytics',
     price: 49,
     description: 'Enhanced reporting and dashboards',
-    enabled: false
+    enabled: false,
+    pricingModel: 'flat_rate'
   },
   {
     id: 'api_access',
     name: 'API Access',
     price: 99,
     description: 'Full REST API with webhooks',
-    enabled: false
+    enabled: false,
+    pricingModel: 'flat_rate'
   },
   {
     id: 'white_label',
     name: 'White Label',
     price: 199,
     description: 'Custom branding and domain',
-    enabled: false
+    enabled: false,
+    pricingModel: 'flat_rate'
   },
   {
     id: 'priority_support',
     name: 'Priority Support',
     price: 79,
     description: '24/7 priority customer support',
-    enabled: false
+    enabled: false,
+    pricingModel: 'flat_rate'
   },
   {
     id: 'sso_integration',
     name: 'SSO Integration',
     price: 149,
     description: 'Single sign-on with SAML/OAuth',
-    enabled: false
+    enabled: false,
+    pricingModel: 'flat_rate'
   },
   {
     id: 'data_export',
     name: 'Data Export',
     price: 29,
     description: 'Bulk data export capabilities',
-    enabled: false
+    enabled: false,
+    pricingModel: 'flat_rate'
   }
 ];
 
@@ -137,10 +143,12 @@ export const DEFAULT_HYBRID_CONFIG: HybridPricingData = {
   capitalPurchases: [10000, 0, 0, 5000, 0, 0, 0, 0, 0, 0, 0, 0],
   initialTenants: 10,
   selectedTier: 'growth',
+  customPricingTiers: [],
   avgUsersPerTenant: 15,
   avgAiUsagePerTenant: 50,
   selectedAddons: ['advanced_analytics'],
-  growthScenario: 'base'
+  growthScenario: 'base',
+  projectionMonths: 12
 };
 
 export const HYBRID_STORAGE_KEY = 'hybrid-pricing-config';
