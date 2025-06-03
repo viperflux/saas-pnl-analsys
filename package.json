@@ -4,14 +4,15 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run db:migrate && next build",
     "start": "next start",
     "lint": "next lint",
     "prod": "npm run build && npm start",
     "db:generate": "drizzle-kit generate:pg",
     "db:migrate": "tsx lib/migrate.ts",
     "db:migrate:auth": "tsx scripts/migrate.ts",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "vercel-build": "npm run db:migrate && next build"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
