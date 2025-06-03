@@ -31,7 +31,7 @@ export async function verifyTokenEdge(token: string): Promise<AuthPayload | null
       issuer: 'pnl-analysis',
       audience: 'pnl-analysis-users',
     });
-    return payload as AuthPayload;
+    return payload as unknown as AuthPayload;
   } catch (error) {
     console.error('JWT verification failed:', error);
     return null;
