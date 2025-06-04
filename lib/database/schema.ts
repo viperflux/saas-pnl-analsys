@@ -78,6 +78,42 @@ const configurationAddons = pgTable('configuration_addons', {
   isEnabled: boolean('is_enabled').default(true).notNull(),
 });
 
+const marketingMetrics = pgTable('marketing_metrics', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: uuid('user_id').references(() => users.id).notNull(),
+  configurationId: uuid('configuration_id').references(() => configurations.id),
+  monthlyMarketingSpend: decimal('monthly_marketing_spend', { precision: 10, scale: 2 }).default('0'),
+  cac: decimal('cac', { precision: 10, scale: 2 }).default('0'),
+  ltv: decimal('ltv', { precision: 10, scale: 2 }).default('0'),
+  ltvCacRatio: decimal('ltv_cac_ratio', { precision: 5, scale: 2 }).default('0'),
+  paybackPeriodMonths: decimal('payback_period_months', { precision: 5, scale: 2 }).default('0'),
+  organicGrowthRate: decimal('organic_growth_rate', { precision: 5, scale: 4 }).default('0'),
+  paidGrowthRate: decimal('paid_growth_rate', { precision: 5, scale: 4 }).default('0'),
+  brandAwarenessSpend: decimal('brand_awareness_spend', { precision: 10, scale: 2 }).default('0'),
+  performanceMarketingSpend: decimal('performance_marketing_spend', { precision: 10, scale: 2 }).default('0'),
+  contentMarketingSpend: decimal('content_marketing_spend', { precision: 10, scale: 2 }).default('0'),
+  affiliateMarketingSpend: decimal('affiliate_marketing_spend', { precision: 10, scale: 2 }).default('0'),
+  conversionRate: decimal('conversion_rate', { precision: 5, scale: 4 }).default('0'),
+  leadQualityScore: integer('lead_quality_score').default(0),
+  marketingRoi: decimal('marketing_roi', { precision: 5, scale: 2 }).default('0'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+const userAnalytics = pgTable('user_analytics', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: uuid('user_id').references(() => users.id).notNull(),
+  configurationId: uuid('configuration_id').references(() => configurations.id),
+  avgUsersPerClient: decimal('avg_users_per_client', { precision: 5, scale: 2 }).default('1'),
+  userGrowthRate: decimal('user_growth_rate', { precision: 5, scale: 4 }).default('0'),
+  userChurnRate: decimal('user_churn_rate', { precision: 5, scale: 4 }).default('0'),
+  arpu: decimal('arpu', { precision: 10, scale: 2 }).default('0'),
+  revenuePerUser: decimal('revenue_per_user', { precision: 10, scale: 2 }).default('0'),
+  userRetentionRate: decimal('user_retention_rate', { precision: 5, scale: 4 }).default('0'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
 export { 
   users, 
   configurations, 
@@ -85,7 +121,9 @@ export {
   customPricingTiers, 
   growthScenarios, 
   featureAddons, 
-  configurationAddons 
+  configurationAddons,
+  marketingMetrics,
+  userAnalytics
 };
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
@@ -101,3 +139,7 @@ export type FeatureAddon = typeof featureAddons.$inferSelect;
 export type NewFeatureAddon = typeof featureAddons.$inferInsert;
 export type ConfigurationAddon = typeof configurationAddons.$inferSelect;
 export type NewConfigurationAddon = typeof configurationAddons.$inferInsert;
+export type MarketingMetric = typeof marketingMetrics.$inferSelect;
+export type NewMarketingMetric = typeof marketingMetrics.$inferInsert;
+export type UserAnalytic = typeof userAnalytics.$inferSelect;
+export type NewUserAnalytic = typeof userAnalytics.$inferInsert;

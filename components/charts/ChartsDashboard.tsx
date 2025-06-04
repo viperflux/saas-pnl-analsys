@@ -31,7 +31,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
         {payload.map((entry: any, index: number) => (
           <p key={index} className="text-sm" style={{ color: entry.color }}>
             {entry.name}:{" "}
-            {entry.name === "Clients"
+            {entry.name === "Users"
               ? entry.value.toLocaleString()
               : formatCurrency(entry.value)}
           </p>
@@ -210,10 +210,10 @@ export default function ChartsDashboard({ chartData }: ChartsDashboardProps) {
               <Tooltip content={<CustomTooltip />} />
               <Line
                 type="monotone"
-                dataKey="clients"
+                dataKey="users"
                 stroke="#8b5cf6"
                 strokeWidth={3}
-                name="Clients"
+                name="Users"
                 dot={{ r: 3 }}
                 activeDot={{ r: 5 }}
               />
@@ -235,10 +235,10 @@ export default function ChartsDashboard({ chartData }: ChartsDashboardProps) {
 
         <div className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-4 rounded-lg border border-blue-200 dark:border-blue-700">
           <div className="text-sm font-medium text-blue-600 dark:text-blue-400">
-            Peak Clients
+            Peak Users
           </div>
           <div className="text-xl font-bold text-blue-900 dark:text-blue-100">
-            {Math.max(...chartData.map((d) => d.clients)).toLocaleString()}
+            {Math.max(...chartData.map((d) => d.users)).toLocaleString()}
           </div>
         </div>
 

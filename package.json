@@ -15,6 +15,8 @@
     "db:upload": "node database/scripts/upload-schema.js",
     "admin:setup": "node scripts/admin/setup-admin.js",
     "admin:update": "node scripts/admin/update-admin.js",
+    "migrate:marketing": "tsx scripts/migrate-database.ts",
+    "migrate:rollback": "tsx scripts/migrate-database.ts rollback",
     "vercel-build": "next build",
     "postdeploy": "npm run db:migrate"
   },
@@ -22,6 +24,7 @@
     "bcryptjs": "^3.0.2",
     "cookie": "^1.0.2",
     "date-fns": "^2.30.0",
+    "dotenv": "^16.5.0",
     "drizzle-orm": "^0.29.0",
     "jose": "^6.0.11",
     "jsonwebtoken": "^9.0.2",

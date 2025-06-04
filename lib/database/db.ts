@@ -1,10 +1,11 @@
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import { users, configurations, userSessions, customPricingTiers, growthScenarios, featureAddons, configurationAddons } from './schema';
+import { users, configurations, userSessions, customPricingTiers, growthScenarios, featureAddons, configurationAddons, marketingMetrics, userAnalytics } from './schema';
 import type { 
   User, NewUser, Configuration, NewConfiguration, UserSession, NewUserSession,
   CustomPricingTier, NewCustomPricingTier, GrowthScenario, NewGrowthScenario,
-  FeatureAddon, NewFeatureAddon, ConfigurationAddon, NewConfigurationAddon
+  FeatureAddon, NewFeatureAddon, ConfigurationAddon, NewConfigurationAddon,
+  MarketingMetric, NewMarketingMetric, UserAnalytic, NewUserAnalytic
 } from './schema';
 import { eq, desc, and } from 'drizzle-orm';
 
@@ -202,6 +203,122 @@ export async function getUserGrowthScenarios(userId: string): Promise<GrowthScen
 export async function getConfigurationGrowthScenarios(configId: string): Promise<GrowthScenario[]> {
   return await db.select().from(growthScenarios)
     .where(eq(growthScenarios.configurationId, configId));
+}
+
+// Marketing Metrics functions
+export async function createMarketingMetrics(metrics: NewMarketingMetric): Promise<MarketingMetric> {
+  const [newMetrics] = await db.insert(marketingMetrics).values(metrics).returning();
+  return newMetrics;
+}
+
+export async function getMarketingMetrics(userId: string): Promise<MarketingMetric | null> {
+  const [metrics] = await db.select().from(marketingMetrics)
+    .where(eq(marketingMetrics.userId, userId))
+    .orderBy(desc(marketingMetrics.createdAt));
+  return metrics || null;
+}
+
+export async function updateMarketingMetrics(userId: string, updates: Partial<NewMarketingMetric>): Promise<MarketingMetric | null> {
+  const [updatedMetrics] = await db
+    .update(marketingMetrics)
+    .set({ ...updates, updatedAt: new Date() })
+    .where(eq(marketingMetrics.userId, userId))
+    .returning();
+  return updatedMetrics || null;
+}
+
+export async function getMarketingMetricsByConfig(configId: string): Promise<MarketingMetric | null> {
+  const [metrics] = await db.select().from(marketingMetrics)
+    .where(eq(marketingMetrics.configurationId, configId));
+  return metrics || null;
+}
+
+// User Analytics functions
+export async function createUserAnalytics(analytics: NewUserAnalytic): Promise<UserAnalytic> {
+  const [newAnalytics] = await db.insert(userAnalytics).values(analytics).returning();
+  return newAnalytics;
+}
+
+export async function getUserAnalytics(userId: string): Promise<UserAnalytic | null> {
+  const [analytics] = await db.select().from(userAnalytics)
+    .where(eq(userAnalytics.userId, userId))
+    .orderBy(desc(userAnalytics.createdAt));
+  return analytics || null;
+}
+
+export async function updateUserAnalytics(userId: string, updates: Partial<NewUserAnalytic>): Promise<UserAnalytic | null> {
+  const [updatedAnalytics] = await db
+    .update(userAnalytics)
+    .set({ ...updates, updatedAt: new Date() })
+    .where(eq(userAnalytics.userId, userId))
+    .returning();
+  return updatedAnalytics || null;
+}
+
+export async function getUserAnalyticsByConfig(configId: string): Promise<UserAnalytic | null> {
+  const [analytics] = await db.select().from(userAnalytics)
+    .where(eq(userAnalytics.configurationId, configId));
+  return analytics || null;
+}
+
+// Combined analytics functions
+export async function getCompleteUserAnalytics(userId: string): Promise<{
+  marketingMetrics: MarketingMetric | null;
+  userAnalytics: UserAnalytic | null;
+}> {
+  const [marketing, analytics] = await Promise.all([
+    getMarketingMetrics(userId),
+    getUserAnalytics(userId)
+  ]);
+  
+  return {
+    marketingMetrics: marketing,
+    userAnalytics: analytics
+  };
+}
+
+export async function initializeUserAnalytics(userId: string, configId?: string): Promise<{
+  marketingMetrics: MarketingMetric;
+  userAnalytics: UserAnalytic;
+}> {
+  // Create default marketing metrics
+  const defaultMarketing: NewMarketingMetric = {
+    userId,
+    configurationId: configId || null,
+    monthlyMarketingSpend: '2000',
+    cac: '150',
+    ltv: '800',
+    ltvCacRatio: '5.3',
+    paybackPeriodMonths: '6',
+    organicGrowthRate: '0.25',
+    paidGrowthRate: '0.75',
+    brandAwarenessSpend: '400',
+    performanceMarketingSpend: '1200',
+    contentMarketingSpend: '300',
+    affiliateMarketingSpend: '100',
+    conversionRate: '0.12',
+    leadQualityScore: 70,
+    marketingRoi: '4.0'
+  };
+
+  // Create default user analytics
+  const defaultAnalytics: NewUserAnalytic = {
+    userId,
+    configurationId: configId || null,
+    avgUsersPerClient: '3',
+    userGrowthRate: '0.05',
+    userChurnRate: '0.02',
+    arpu: '49',
+    revenuePerUser: '16.33',
+    userRetentionRate: '0.98'
+  };
+
+  const [marketing, analytics] = await Promise.all([
+    createMarketingMetrics(defaultMarketing),
+    createUserAnalytics(defaultAnalytics)
+  ]);
+
+  return { marketingMetrics: marketing, userAnalytics: analytics };
 }
 
 export async function updateGrowthScenario(id: string, updates: Partial<NewGrowthScenario>): Promise<GrowthScenario | null> {

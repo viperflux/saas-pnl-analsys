@@ -59,15 +59,15 @@ export default function ClientInputForm({ config, onChange }: ClientInputFormPro
 
           {/* Initial Clients */}
           <div>
-            <label htmlFor="initialClients" className="form-label">
-              Initial Clients
+            <label htmlFor="initialUsers" className="form-label">
+              Initial Users
             </label>
             <input
-              id="initialClients"
+              id="initialUsers"
               type="number"
               min="0"
-              value={config.initialClients}
-              onChange={(e) => updateConfig('initialClients', parseInt(e.target.value) || 0)}
+              value={config.initialUsers}
+              onChange={(e) => updateConfig('initialUsers', parseInt(e.target.value) || 0)}
               className="form-input"
               placeholder="5"
             />
@@ -75,16 +75,16 @@ export default function ClientInputForm({ config, onChange }: ClientInputFormPro
 
           {/* Price Per Client */}
           <div>
-            <label htmlFor="pricePerClient" className="form-label">
-              Monthly Price per Client ($)
+            <label htmlFor="pricePerUser" className="form-label">
+              Monthly Price per User ($)
             </label>
             <input
-              id="pricePerClient"
+              id="pricePerUser"
               type="number"
               min="0"
               step="0.01"
-              value={config.pricePerClient}
-              onChange={(e) => updateConfig('pricePerClient', parseFloat(e.target.value) || 0)}
+              value={config.pricePerUser}
+              onChange={(e) => updateConfig('pricePerUser', parseFloat(e.target.value) || 0)}
               className="form-input"
               placeholder="49"
             />
@@ -110,18 +110,18 @@ export default function ClientInputForm({ config, onChange }: ClientInputFormPro
 
           {/* OpenAI Cost */}
           <div>
-            <label htmlFor="openAiCost" className="form-label">
-              AI Cost per Client/Month ($)
+            <label htmlFor="marketingSpend" className="form-label">
+              Monthly Marketing Spend ($)
             </label>
             <input
-              id="openAiCost"
+              id="marketingSpend"
               type="number"
               min="0"
-              step="0.01"
-              value={config.openAiCostPerClient}
-              onChange={(e) => updateConfig('openAiCostPerClient', parseFloat(e.target.value) || 0)}
+              step="50"
+              value={config.monthlyFixedCosts.marketing || 0}
+              onChange={(e) => updateConfig('monthlyFixedCosts', {...config.monthlyFixedCosts, marketing: parseFloat(e.target.value) || 0})}
               className="form-input"
-              placeholder="5"
+              placeholder="2000"
             />
           </div>
         </div>

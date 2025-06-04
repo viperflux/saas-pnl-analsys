@@ -34,45 +34,31 @@ export default function CashFlowTable({ monthlyData }: CashFlowTableProps) {
               <tr>
                 <th className="table-header-cell">Month</th>
                 <th className="table-header-cell">Date</th>
-                <th className="table-header-cell">Clients</th>
+                <th className="table-header-cell">Users</th>
                 <th className="table-header-cell">New</th>
                 <th className="table-header-cell">Churned</th>
                 <th className="table-header-cell">Revenue</th>
-                <th className="table-header-cell">Fixed Costs</th>
-                <th className="table-header-cell">AI Costs</th>
-                <th className="table-header-cell">Capital</th>
-                <th className="table-header-cell">Total Expenses</th>
+                <th className="table-header-cell">Expenses</th>
                 <th className="table-header-cell">Profit</th>
-                <th className="table-header-cell">Cash on Hand</th>
+                <th className="table-header-cell">Cash</th>
               </tr>
             </thead>
-            <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+            <tbody>
               {monthlyData.map((month) => (
                 <tr key={month.month} className="table-row">
                   <td className="table-cell font-medium">{month.month}</td>
                   <td className="table-cell">{month.date}</td>
                   <td className="table-cell font-semibold text-primary-600 dark:text-primary-400">
-                    {formatNumber(month.clients)}
+                    {formatNumber(month.users)}
                   </td>
                   <td className="table-cell text-success-600 dark:text-success-400">
-                    +{month.newClients}
+                    +{formatNumber(month.newUsers)}
                   </td>
                   <td className="table-cell text-danger-600 dark:text-danger-400">
-                    -{month.churnedClients}
+                    -{formatNumber(month.churnedUsers)}
                   </td>
                   <td className="table-cell font-medium text-success-700 dark:text-success-300">
                     {formatCurrency(month.revenue)}
-                  </td>
-                  <td className="table-cell text-gray-600 dark:text-gray-400">
-                    {formatCurrency(month.fixedCosts)}
-                  </td>
-                  <td className="table-cell text-gray-600 dark:text-gray-400">
-                    {formatCurrency(month.aiCosts)}
-                  </td>
-                  <td className="table-cell text-orange-600 dark:text-orange-400">
-                    {month.capitalPurchase > 0
-                      ? formatCurrency(month.capitalPurchase)
-                      : "-"}
                   </td>
                   <td className="table-cell font-medium text-danger-700 dark:text-danger-300">
                     {formatCurrency(month.totalExpenses)}

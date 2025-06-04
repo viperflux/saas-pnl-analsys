@@ -131,10 +131,10 @@ export default function RevenueGoalTracker({
                 </div>
                 <div className="ml-3">
                   <p className="text-sm font-medium text-orange-600 dark:text-orange-400">
-                    Clients Needed for Goal
+                    Required Users for $1M
                   </p>
                   <p className="text-2xl font-bold text-orange-900 dark:text-orange-100">
-                    {formatNumber(revenueGoalData.requiredClientsForGoal)}
+                    {formatNumber(revenueGoalData.requiredUsersForGoal)}
                   </p>
                 </div>
               </div>
@@ -195,8 +195,8 @@ export default function RevenueGoalTracker({
             </div>
           </div>
 
-          {/* Additional Clients Needed */}
-          {revenueGoalData.additionalClientsNeeded > 0 && (
+          {/* Additional Users Needed */}
+          {revenueGoalData.additionalUsersNeeded > 0 && (
             <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mb-6">
               <div className="flex items-start">
                 <div className="flex-shrink-0">
@@ -211,8 +211,8 @@ export default function RevenueGoalTracker({
                   <p className="text-sm text-yellow-700 dark:text-yellow-300 mt-1">
                     You need{" "}
                     <strong>
-                      {formatNumber(revenueGoalData.additionalClientsNeeded)}{" "}
-                      additional clients per month
+                      {formatNumber(revenueGoalData.additionalUsersNeeded)}{" "}
+                      additional users per month
                     </strong>{" "}
                     on average to reach your $1M annual revenue goal.
                   </p>
@@ -429,7 +429,7 @@ export default function RevenueGoalTracker({
                 <span className="text-blue-800 dark:text-blue-200">
                   To hit your monthly target of{" "}
                   {formatCurrency(revenueGoalData.monthlyGoalRevenue)}, you need
-                  approximately {revenueGoalData.requiredClientsForGoal} clients
+                  approximately {revenueGoalData.requiredUsersForGoal} clients
                   per month.
                 </span>
               </div>

@@ -24,6 +24,11 @@ import {
   generateChartData,
 } from "@/lib/calculations/calculations";
 import {
+  calculateEnhancedProjections,
+  calculateEnhancedHybridProjections,
+  runCalculationTests,
+} from "@/lib/calculations/enhancedCalculations";
+import {
   calculateHybridProjections,
   generateHybridChartData,
 } from "@/lib/calculations/hybridCalculations";
@@ -32,7 +37,15 @@ import { DEFAULT_HYBRID_CONFIG } from "@/lib/utils/hybridConfig";
 import Header from "@/components/ui/Header";
 
 export default function HomePage() {
-  const [config, setConfig] = useState<FinancialData>(DEFAULT_CONFIG);
+  const [config, setConfig] = useState<FinancialData>({
+    ...DEFAULT_CONFIG,
+    pricePerUser: DEFAULT_CONFIG.pricePerUser || 49,
+    initialUsers: DEFAULT_CONFIG.initialUsers || 5,
+    monthlyFixedCosts: {
+      ...DEFAULT_CONFIG.monthlyFixedCosts,
+      marketing: DEFAULT_CONFIG.monthlyFixedCosts.marketing || 2000
+    }
+  });
   const [hybridConfig, setHybridConfig] = useState<HybridPricingData>(
     DEFAULT_HYBRID_CONFIG,
   );
@@ -45,6 +58,8 @@ export default function HomePage() {
     "standard",
   );
   const [isCalculating, setIsCalculating] = useState(false);
+  const [useEnhancedCalculations, setUseEnhancedCalculations] = useState(true);
+  const [calculationErrors, setCalculationErrors] = useState<string[]>([]);
 
   // Calculate projections whenever config changes with debouncing for better UX
   useEffect(() => {
@@ -52,16 +67,34 @@ export default function HomePage() {
 
     const calculateWithDelay = setTimeout(() => {
       try {
+        setCalculationErrors([]);
+        
         if (pricingMode === "standard") {
-          const calculationResults = calculateMonthlyProjections(config);
-          setResults(calculationResults);
+          if (useEnhancedCalculations) {
+            // Run validation tests first
+            const testResults = runCalculationTests(config);
+            if (!testResults.passed) {
+              setCalculationErrors(testResults.errors);
+            }
+            
+            const calculationResults = calculateEnhancedProjections(config);
+            setResults(calculationResults);
+          } else {
+            const calculationResults = calculateMonthlyProjections(config);
+            setResults(calculationResults);
+          }
         } else {
-          const hybridCalculationResults =
-            calculateHybridProjections(hybridConfig);
-          setHybridResults(hybridCalculationResults);
+          if (useEnhancedCalculations) {
+            const hybridCalculationResults = calculateEnhancedHybridProjections(hybridConfig);
+            setHybridResults(hybridCalculationResults);
+          } else {
+            const hybridCalculationResults = calculateHybridProjections(hybridConfig);
+            setHybridResults(hybridCalculationResults);
+          }
         }
       } catch (error) {
         console.error("Error calculating projections:", error);
+        setCalculationErrors([`Calculation error: ${error instanceof Error ? error.message : String(error)}`]);
         if (pricingMode === "standard") {
           setResults(null);
         } else {
@@ -73,7 +106,7 @@ export default function HomePage() {
     }, 300); // Debounce calculations by 300ms
 
     return () => clearTimeout(calculateWithDelay);
-  }, [config, hybridConfig, pricingMode]);
+  }, [config, hybridConfig, pricingMode, useEnhancedCalculations]);
 
   // Initialize with default config - ConfigurationManager will handle loading from DB
   useEffect(() => {
@@ -96,7 +129,16 @@ export default function HomePage() {
         "Are you sure you want to reset to default values? This will overwrite your current configuration.",
       )
     ) {
-      setConfig(DEFAULT_CONFIG);
+      const resetConfig = {
+        ...DEFAULT_CONFIG,
+        pricePerUser: 49,
+        initialUsers: 5,
+        monthlyFixedCosts: {
+          ...DEFAULT_CONFIG.monthlyFixedCosts,
+          marketing: 2000
+        }
+      };
+      setConfig(resetConfig);
       setCurrentConfigId(undefined);
       alert("Configuration reset to default values!");
     }
@@ -111,7 +153,7 @@ export default function HomePage() {
     {
       id: "inputs",
       label: "⚙️ Setup",
-      description: "Configure your business parameters",
+      description: "Configure your business and marketing parameters",
     },
     {
       id: "controls",
@@ -126,7 +168,7 @@ export default function HomePage() {
     {
       id: "projections",
       label: "📊 Projections",
-      description: "View monthly financial projections",
+      description: "View monthly financial projections with marketing costs",
     },
     {
       id: "analysis",
@@ -173,6 +215,52 @@ export default function HomePage() {
       />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Enhanced Calculations Toggle and Status */}
+        <div className="mb-6 bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                Calculation Engine
+              </h2>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Enhanced calculations include marketing costs, user-level analytics, CAC/LTV metrics, and comprehensive validation
+              </p>
+            </div>
+            <div className="flex items-center space-x-4">
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={useEnhancedCalculations}
+                  onChange={(e) => setUseEnhancedCalculations(e.target.checked)}
+                  className="mr-2"
+                />
+                <span className="text-sm text-gray-700 dark:text-gray-300">
+                  Use Enhanced Calculations
+                </span>
+              </label>
+              {isCalculating && (
+                <div className="flex items-center text-sm text-blue-600 dark:text-blue-400">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-2"></div>
+                  Calculating...
+                </div>
+              )}
+            </div>
+          </div>
+          
+          {/* Error Display */}
+          {calculationErrors.length > 0 && (
+            <div className="mt-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-lg p-3">
+              <h3 className="text-sm font-medium text-red-800 dark:text-red-200 mb-2">
+                Calculation Issues Detected:
+              </h3>
+              <ul className="text-sm text-red-700 dark:text-red-300 space-y-1">
+                {calculationErrors.map((error, index) => (
+                  <li key={index}>• {error}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
         {/* Pricing Mode Toggle */}
         <div className="mb-6">
           <div className="flex items-center justify-center space-x-4">
@@ -483,11 +571,11 @@ export default function HomePage() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                 <div>
                   <div className="text-gray-500 dark:text-gray-400">
-                    Total Clients (End)
+                    Total Users (End)
                   </div>
                   <div className="font-bold text-lg text-primary-600 dark:text-primary-400">
                     {results.monthlyData[results.monthlyData.length - 1]
-                      ?.clients || 0}
+                      ?.users || 0}
                   </div>
                 </div>
                 <div>

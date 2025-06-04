@@ -32,10 +32,10 @@ export default function InteractiveControls({ config, onChange }: InteractiveCon
           <div className="space-y-4">
             <div className="flex justify-between items-center">
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Price Per Client
+                Price per User
               </label>
               <span className="text-lg font-bold text-primary-600 dark:text-primary-400">
-                ${config.pricePerClient}
+                ${config.pricePerUser}
               </span>
             </div>
             <div className="relative">
@@ -44,11 +44,11 @@ export default function InteractiveControls({ config, onChange }: InteractiveCon
                 min="10"
                 max="200"
                 step="1"
-                value={config.pricePerClient}
-                onChange={(e) => updateConfig('pricePerClient', parseFloat(e.target.value))}
+                value={config.pricePerUser}
+                onChange={(e) => updateConfig('pricePerUser', parseFloat(e.target.value) || 0)}
                 className="w-full h-2 bg-gray-200 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer slider"
                 style={{
-                  background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${((config.pricePerClient - 10) / (200 - 10)) * 100}%, #e5e7eb ${((config.pricePerClient - 10) / (200 - 10)) * 100}%, #e5e7eb 100%)`
+                  background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${((config.pricePerUser - 10) / (200 - 10)) * 100}%, #e5e7eb ${((config.pricePerUser - 10) / (200 - 10)) * 100}%, #e5e7eb 100%)`
                 }}
               />
               <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
@@ -140,7 +140,7 @@ export default function InteractiveControls({ config, onChange }: InteractiveCon
           <div className="flex flex-wrap gap-3">
             <button
               onClick={() => {
-                updateConfig('pricePerClient', 39);
+                updateConfig('pricePerUser', 39);
                 updateConfig('churnRate', 0.05);
                 updateGrowthRate(5);
               }}
@@ -150,7 +150,7 @@ export default function InteractiveControls({ config, onChange }: InteractiveCon
             </button>
             <button
               onClick={() => {
-                updateConfig('pricePerClient', 49);
+                updateConfig('pricePerUser', 49);
                 updateConfig('churnRate', 0.03);
                 updateGrowthRate(8);
               }}
@@ -160,7 +160,7 @@ export default function InteractiveControls({ config, onChange }: InteractiveCon
             </button>
             <button
               onClick={() => {
-                updateConfig('pricePerClient', 69);
+                updateConfig('pricePerUser', 69);
                 updateConfig('churnRate', 0.02);
                 updateGrowthRate(15);
               }}
@@ -170,7 +170,7 @@ export default function InteractiveControls({ config, onChange }: InteractiveCon
             </button>
             <button
               onClick={() => {
-                updateConfig('pricePerClient', 99);
+                updateConfig('pricePerUser', 99);
                 updateConfig('churnRate', 0.01);
                 updateGrowthRate(25);
               }}

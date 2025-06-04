@@ -31,7 +31,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
         {payload.map((entry: any, index: number) => (
           <p key={index} className="text-sm" style={{ color: entry.color }}>
             {entry.name}:{" "}
-            {entry.name.includes("Clients") || entry.name.includes("clients")
+            {entry.name.includes("Users") || entry.name.includes("users")
               ? formatNumber(entry.value)
               : formatCurrency(entry.value)}
           </p>
@@ -65,8 +65,8 @@ export default function PredictionSections({
     const breakEvenData = results.breakEvenData[index];
     return {
       month: month.date,
-      actualClients: month.clients,
-      requiredClients: breakEvenData?.requiredClients || 0,
+      actualUsers: month.users,
+      requiredUsers: breakEvenData?.requiredUsers || 0,
       profit: month.profit,
       isBreakEven: month.profit >= 0,
     };
@@ -145,13 +145,13 @@ export default function PredictionSections({
                 <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600 dark:text-gray-300">
-                      Avg Required Clients/Month
+                      Avg Required Users/Month
                     </span>
                     <span className="font-semibold text-gray-900 dark:text-gray-100">
                       {formatNumber(
                         Math.round(
                           results.breakEvenData.reduce(
-                            (sum, m) => sum + m.requiredClients,
+                            (sum, m) => sum + m.requiredUsers,
                             0,
                           ) / 12,
                         ),
@@ -179,12 +179,12 @@ export default function PredictionSections({
                   <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-gray-600 dark:text-gray-300">
-                        Clients Needed at Break-even
+                        Users Needed at Break-even
                       </span>
                       <span className="font-semibold text-gray-900 dark:text-gray-100">
                         {formatNumber(
                           results.breakEvenData[breakEvenMonth - 1]
-                            ?.actualClients || 0,
+                            ?.actualUsers || 0,
                         )}
                       </span>
                     </div>
@@ -205,13 +205,13 @@ export default function PredictionSections({
                   </div>
                   <div>
                     • Reduce churn by 1% →{" "}
-                    {formatNumber(Math.round(results.maxClients * 0.01 * 12))}{" "}
-                    more retained clients/year
+                    {formatNumber(Math.round(results.maxUsers * 0.01 * 12))}{" "}
+                    more retained Users/year
                   </div>
                   <div>
-                    • Add 5 clients/month →{" "}
-                    {formatCurrency(5 * config.pricePerClient * 12)} extra
-                    annual revenue
+                    • Add 5 users/month →{" "}
+                    {formatCurrency(5 * config.pricePerUser * 12)} extra annual
+                    revenue
                   </div>
                 </div>
               </div>
@@ -220,7 +220,7 @@ export default function PredictionSections({
             {/* Break-even Chart */}
             <div>
               <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                📊 Actual vs Required Clients
+                📊 Actual vs Required Users
               </h3>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={breakEvenChartData}>
@@ -243,12 +243,12 @@ export default function PredictionSections({
                   <Tooltip content={<CustomTooltip />} />
                   <Legend />
                   <Bar
-                    dataKey="requiredClients"
+                    dataKey="requiredUsers"
                     fill="#ef4444"
-                    name="Required Clients"
+                    name="Required Users"
                     opacity={0.7}
                   />
-                  <Bar dataKey="actualClients" name="Actual Clients">
+                  <Bar dataKey="actualUsers" name="Actual Users">
                     {breakEvenChartData.map((entry, index) => (
                       <Cell
                         key={`cell-${index}`}
@@ -365,11 +365,11 @@ export default function PredictionSections({
                 <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600 dark:text-gray-300">
-                      Clients Needed for Goal
+                      Users Needed for Goal
                     </span>
                     <span className="font-semibold text-gray-900 dark:text-gray-100">
                       {formatNumber(
-                        results.revenueGoalData.requiredClientsForGoal,
+                        results.revenueGoalData.requiredUsersForGoal,
                       )}
                     </span>
                   </div>
@@ -378,12 +378,12 @@ export default function PredictionSections({
                 <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600 dark:text-gray-300">
-                      Additional Clients Needed
+                      Additional Users Needed
                     </span>
                     <span className="font-semibold text-gray-900 dark:text-gray-100">
                       +
                       {formatNumber(
-                        results.revenueGoalData.additionalClientsNeeded,
+                        results.revenueGoalData.additionalUsersNeeded,
                       )}
                       /month
                     </span>
@@ -399,7 +399,7 @@ export default function PredictionSections({
                 </h4>
                 <div className="space-y-2 text-sm text-purple-800 dark:text-purple-200">
                   <div>
-                    • Double price to ${config.pricePerClient * 2} → Reach goal{" "}
+                    • Double price to ${config.pricePerUser * 2} → Reach goal{" "}
                     {timeToMillion
                       ? Math.max(1, Math.round(timeToMillion / 2))
                       : 6}{" "}
@@ -409,14 +409,13 @@ export default function PredictionSections({
                     • Reduce churn to 1% → Keep{" "}
                     {formatNumber(
                       Math.round(
-                        results.maxClients * (config.churnRate - 0.01) * 12,
+                        results.maxUsers * (config.churnRate - 0.01) * 12,
                       ),
                     )}{" "}
-                    more clients/year
+                    more Users/year
                   </div>
                   <div>
-                    • Add enterprise tier at $200/month → Need fewer total
-                    clients
+                    • Add enterprise tier at $200/month → Need fewer total Users
                   </div>
                 </div>
               </div>

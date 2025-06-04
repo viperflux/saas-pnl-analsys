@@ -190,10 +190,10 @@ export default function PnLReport({ results }: PnLReportProps) {
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span className="text-sm text-gray-600 dark:text-gray-300">
-                  Max Clients:
+                  Max Users:
                 </span>
                 <span className="font-semibold text-gray-900 dark:text-gray-100">
-                  {formatNumber(results.maxClients)}
+                  {formatNumber(results.maxUsers)}
                 </span>
               </div>
               <div className="flex justify-between">
@@ -279,7 +279,7 @@ export default function PnLReport({ results }: PnLReportProps) {
                   Your business shows a net loss of{" "}
                   {formatCurrency(Math.abs(results.totalProfit))} over 12
                   months. Consider increasing prices, reducing costs, or
-                  improving client retention.
+                  improving User retention.
                 </span>
               </div>
             )}

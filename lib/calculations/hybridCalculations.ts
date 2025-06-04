@@ -106,6 +106,18 @@ export function calculateHybridProjections(
     const profit = totalRevenue - totalExpenses;
     currentCash += profit;
 
+    // Calculate enhanced metrics
+    const arpu = avgTenants > 0 ? totalRevenue / avgTenants : 0;
+    const avgTenantLifespan = 1 / scenario.churnRate;
+    const ltv = arpu * avgTenantLifespan * 0.85; // 85% gross margin
+    const cac = 250; // Default CAC for basic hybrid calculations
+    const retentionRate = 1 - scenario.churnRate;
+    const nrr = retentionRate + 0.12; // 12% expansion rate
+    const timeToPayback = cac > 0 ? cac / (arpu * 0.85) : 0;
+    const marketingSpend = 1000; // Default marketing spend
+    const newUsers = newTenants * currentUsersPerTenant;
+    const churnedUsers = Math.round(totalUsers * scenario.churnRate * 0.8);
+
     monthlyData.push({
       month: month + 1,
       date: monthName,
@@ -127,6 +139,15 @@ export function calculateHybridProjections(
       mrr: Math.round(mrr * 100) / 100,
       avgUsersPerTenant: currentUsersPerTenant,
       avgAiUsagePerTenant: currentAiUsagePerTenant,
+      arpu: Math.round(arpu * 100) / 100,
+      cac: Math.round(cac * 100) / 100,
+      ltv: Math.round(ltv * 100) / 100,
+      marketingSpend: Math.round(marketingSpend * 100) / 100,
+      retentionRate: Math.round(retentionRate * 10000) / 100,
+      nrr: Math.round(nrr * 10000) / 100,
+      timeToPayback: Math.round(timeToPayback * 100) / 100,
+      newUsers,
+      churnedUsers,
     });
 
     currentTenants = endingTenants;
@@ -233,6 +254,19 @@ export function calculateHybridProjections(
       churnRate: Math.round(avgChurnRate * 100 * 100) / 100,
       ltv: Math.round(ltv * 100) / 100,
       cac: Math.round(cac * 100) / 100,
+      arpu: Math.round(avgMonthlyRevenuePerTenant * 100) / 100,
+      nrr: Math.round(110 * 100) / 100, // Default NRR of 110%
+      timeToPayback: Math.round((cac / (avgMonthlyRevenuePerTenant * 0.85)) * 100) / 100,
+    },
+    marketingMetrics: {
+      totalMarketingSpend: Math.round(marketingSpend * 100) / 100,
+      avgCac: Math.round(cac * 100) / 100,
+      avgLtv: Math.round(ltv * 100) / 100,
+      avgLtvCacRatio: Math.round((ltv / cac) * 100) / 100,
+      avgPaybackPeriod: Math.round((cac / (avgMonthlyRevenuePerTenant * 0.85)) * 100) / 100,
+      marketingROI: Math.round(3.0 * 100) / 100,
+      channelPerformance: [],
+      customerAcquisitionTrends: [],
     },
   };
 }

@@ -3,22 +3,41 @@ import { FinancialData } from '@/types';
 export const DEFAULT_CONFIG: FinancialData = {
   startingCash: 0,
   startDate: "2025-06-01",
-  pricePerClient: 49,
+  pricePerUser: 49,
   churnRate: 0.03,
   monthlyFixedCosts: {
     infra: 1588.60,
     salary: 3000,
     support: 500,
     wages: 1000,
-    hosting: 1600
+    hosting: 1600,
+    marketing: 2000
   },
-  openAiCostPerClient: 5,
   capitalPurchases: [2000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   seasonalGrowth: [8, 10, 12, 5, 6, 7, 10, 12, 8, 5, 4, 3],
-  initialClients: 5,
+  initialUsers: 5,
   projectionMonths: 12,
   selectedGrowthScenario: 'conservative',
-  enabledAddons: []
+  enabledAddons: [],
+  avgUsersPerClient: 3,
+  userGrowthRate: 0.05,
+  userChurnRate: 0.02,
+  marketingMetrics: {
+    monthlyMarketingSpend: 2000,
+    cac: 150,
+    ltv: 800,
+    ltvCacRatio: 5.3,
+    paybackPeriodMonths: 6,
+    organicGrowthRate: 0.25,
+    paidGrowthRate: 0.75,
+    brandAwarenessSpend: 400,
+    performanceMarketingSpend: 1200,
+    contentMarketingSpend: 300,
+    affiliateMarketingSpend: 100,
+    conversionRate: 0.12,
+    leadQualityScore: 70,
+    marketingROI: 4.0,
+  }
 };
 
 export const STORAGE_KEY = 'pnl-analysis-config';
@@ -75,7 +94,7 @@ export const SCENARIO_PRESETS = {
     name: "Price Increase",
     description: "50% price increase after month 3",
     modifications: {
-      pricePerClient: 74
+      pricePerUser: 74
     }
   }
 };

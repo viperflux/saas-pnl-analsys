@@ -61,6 +61,10 @@ export interface GrowthScenario {
   userGrowthRate: number;
   aiGrowthRate: number;
   churnRate: number;
+  marketingSpendRate?: number;
+  cac?: number;
+  ltv?: number;
+  nrr?: number;
 }
 
 export interface HybridPricingData {
@@ -72,6 +76,7 @@ export interface HybridPricingData {
     support: number;
     wages: number;
     hosting: number;
+    marketing?: number;
   };
   capitalPurchases: number[];
   initialTenants: number;
@@ -84,12 +89,13 @@ export interface HybridPricingData {
   customScenario?: GrowthScenario;
   projectionMonths: number;
   multipleScenarios?: GrowthScenario[];
+  marketingMetrics?: MarketingMetrics;
 }
 
 export interface FinancialData {
   startingCash: number;
   startDate: string;
-  pricePerClient: number;
+  pricePerUser: number;
   churnRate: number;
   monthlyFixedCosts: {
     infra: number;
@@ -97,30 +103,41 @@ export interface FinancialData {
     support: number;
     wages: number;
     hosting: number;
+    marketing?: number;
   };
-  openAiCostPerClient: number;
   capitalPurchases: number[];
   seasonalGrowth: number[];
-  initialClients: number;
+  initialUsers: number;
   projectionMonths: number;
   selectedGrowthScenario?: string;
   enabledAddons?: string[];
+  marketingMetrics?: MarketingMetrics;
+  avgUsersPerClient?: number;
+  userGrowthRate?: number;
+  userChurnRate?: number;
 }
 
 export interface MonthlyData {
   month: number;
   date: string;
-  clients: number;
-  newClients: number;
-  churnedClients: number;
+  users: number;
+  newUsers: number;
+  churnedUsers: number;
   revenue: number;
   fixedCosts: number;
   variableCosts: number;
-  aiCosts: number;
   capitalPurchase: number;
   totalExpenses: number;
   profit: number;
   cashOnHand: number;
+  totalUsers?: number;
+  arpu?: number;
+  cac?: number;
+  ltv?: number;
+  marketingSpend?: number;
+  retentionRate?: number;
+  nrr?: number;
+  timeToPayback?: number;
 }
 
 export interface HybridMonthlyData {
@@ -144,12 +161,21 @@ export interface HybridMonthlyData {
   mrr: number;
   avgUsersPerTenant: number;
   avgAiUsagePerTenant: number;
+  arpu: number;
+  cac: number;
+  ltv: number;
+  marketingSpend: number;
+  retentionRate: number;
+  nrr: number;
+  timeToPayback: number;
+  newUsers: number;
+  churnedUsers: number;
 }
 
 export interface BreakEvenData {
   month: number;
-  actualClients: number;
-  requiredClients: number;
+  actualUsers: number;
+  requiredUsers: number;
   breakEvenRevenue: number;
   actualRevenue: number;
   isBreakEven: boolean;
@@ -160,8 +186,8 @@ export interface RevenueGoalData {
   currentAnnualRevenue: number;
   requiredAnnualRevenue: number;
   monthlyGoalRevenue: number;
-  requiredClientsForGoal: number;
-  additionalClientsNeeded: number;
+  requiredUsersForGoal: number;
+  additionalUsersNeeded: number;
   progressPercentage: number;
   projectedAnnualRevenue: number;
   monthsToReachGoal: number | null;
@@ -174,7 +200,7 @@ export interface CalculationResults {
   totalProfit: number;
   finalCash: number;
   breakEvenMonth: number | null;
-  maxClients: number;
+  maxUsers: number;
   avgMonthlyProfit: number;
   breakEvenData: BreakEvenData[];
   revenueGoalData: RevenueGoalData;
@@ -206,7 +232,11 @@ export interface HybridCalculationResults {
     churnRate: number;
     ltv: number;
     cac: number;
+    arpu: number;
+    nrr: number;
+    timeToPayback: number;
   };
+  marketingMetrics: MarketingAnalytics;
 }
 
 export interface ChartDataPoint {
@@ -215,7 +245,7 @@ export interface ChartDataPoint {
   expenses: number;
   profit: number;
   cash: number;
-  clients: number;
+  users: number;
 }
 
 export interface ScenarioConfig {
@@ -255,4 +285,88 @@ export interface AddonCalculation {
   totalRevenue: number;
   quantity: number;
   unitPrice: number;
+}
+
+export interface MarketingMetrics {
+  monthlyMarketingSpend: number;
+  cac: number;
+  ltv: number;
+  ltvCacRatio: number;
+  paybackPeriodMonths: number;
+  organicGrowthRate: number;
+  paidGrowthRate: number;
+  brandAwarenessSpend: number;
+  performanceMarketingSpend: number;
+  contentMarketingSpend: number;
+  affiliateMarketingSpend: number;
+  conversionRate: number;
+  leadQualityScore: number;
+  marketingROI: number;
+}
+
+export interface MarketingAnalytics {
+  totalMarketingSpend: number;
+  avgCac: number;
+  avgLtv: number;
+  avgLtvCacRatio: number;
+  avgPaybackPeriod: number;
+  marketingROI: number;
+  channelPerformance: ChannelPerformance[];
+  customerAcquisitionTrends: AcquisitionTrend[];
+}
+
+export interface ChannelPerformance {
+  channel: string;
+  spend: number;
+  acquisitions: number;
+  cac: number;
+  roi: number;
+}
+
+export interface AcquisitionTrend {
+  month: string;
+  organicAcquisitions: number;
+  paidAcquisitions: number;
+  totalCost: number;
+  blendedCac: number;
+}
+
+export interface UserLevelMetrics {
+  avgUsersPerTenant: number;
+  userGrowthRate: number;
+  userChurnRate: number;
+  userRetentionRate: number;
+  userLtv: number;
+  revenuePerUser: number;
+  activeUserRate: number;
+}
+
+export interface RetentionMetrics {
+  monthlyRetentionRate: number;
+  nrr: number; // Net Revenue Retention
+  grr: number; // Gross Revenue Retention
+  expansionRevenue: number;
+  contractionRevenue: number;
+  churnRevenue: number;
+}
+
+export interface FeatureUsageMetrics {
+  premiumFeatureAdoption: number;
+  aiFeatureUsage: number;
+  averageFeatureUtilization: number;
+  featureStickiness: number;
+}
+
+export interface InfrastructureMetrics {
+  serverCosts: number;
+  aiInferenceCosts: number;
+  apiUsageCosts: number;
+  storageGrowthRate: number;
+  scalingThresholds: ScalingThreshold[];
+}
+
+export interface ScalingThreshold {
+  userCount: number;
+  costPerUser: number;
+  infrastructureUpgrade: number;
 }

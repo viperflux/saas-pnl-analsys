@@ -3,6 +3,7 @@ import { FinancialData } from "@/types";
 import GrowthScenarioManager from "../management/GrowthScenarioManager";
 import FeatureAddonsManager from "../management/FeatureAddonsManager";
 import ProjectionTimeframeSelector from "../management/ProjectionTimeframeSelector";
+import MarketingMetricsManager from "../management/MarketingMetricsManager";
 
 interface EnhancedInputFormProps {
   config: FinancialData;
@@ -16,7 +17,7 @@ export default function EnhancedInputForm({
   onSave,
 }: EnhancedInputFormProps) {
   const [activeSection, setActiveSection] = useState<
-    "basic" | "projections" | "growth" | "addons"
+    "basic" | "projections" | "growth" | "addons" | "marketing"
   >("basic");
 
   const handleInputChange = (field: keyof FinancialData, value: any) => {
@@ -87,6 +88,7 @@ export default function EnhancedInputForm({
     { id: "projections", label: "Projections", icon: "📊" },
     { id: "growth", label: "Growth Scenarios", icon: "📈" },
     { id: "addons", label: "Feature Add-ons", icon: "🔌" },
+    { id: "marketing", label: "Marketing Metrics", icon: "📣" },
   ];
 
   return (
@@ -138,16 +140,16 @@ export default function EnhancedInputForm({
               />
             </div>
             <div>
-              <label className="form-label">Price per Client ($)</label>
+              <label className="form-label">Price per User ($)</label>
               <input
                 type="number"
-                value={config.pricePerClient}
+                value={config.pricePerUser}
                 onChange={(e) =>
-                  handleInputChange("pricePerClient", Number(e.target.value))
+                  handleInputChange("pricePerUser", Number(e.target.value))
                 }
                 className="form-input"
                 min="0"
-                step="0.01"
+                step="1"
               />
             </div>
             <div>
@@ -165,31 +167,33 @@ export default function EnhancedInputForm({
               />
             </div>
             <div>
-              <label className="form-label">Initial Clients</label>
+              <label className="form-label">Initial Users</label>
               <input
                 type="number"
-                value={config.initialClients}
+                value={config.initialUsers}
                 onChange={(e) =>
-                  handleInputChange("initialClients", Number(e.target.value))
+                  handleInputChange("initialUsers", Number(e.target.value))
                 }
                 className="form-input"
                 min="0"
+                step="1"
               />
             </div>
             <div>
-              <label className="form-label">AI Cost per Client ($)</label>
+              <label className="form-label">Marketing Spend ($)</label>
               <input
                 type="number"
-                value={config.openAiCostPerClient}
+                value={config.monthlyFixedCosts.marketing || 0}
                 onChange={(e) =>
-                  handleInputChange(
-                    "openAiCostPerClient",
+                  handleNestedInputChange(
+                    "monthlyFixedCosts",
+                    "marketing",
                     Number(e.target.value),
                   )
                 }
                 className="form-input"
                 min="0"
-                step="0.01"
+                step="50"
               />
             </div>
           </div>
@@ -387,7 +391,32 @@ export default function EnhancedInputForm({
             handleInputChange("enabledAddons", addons)
           }
           projectionMonths={config.projectionMonths}
-          clientCount={config.initialClients}
+          clientCount={config.initialUsers}
+        />
+      )}
+
+      {/* Marketing Metrics Section */}
+      {activeSection === "marketing" && (
+        <MarketingMetricsManager
+          marketingMetrics={config.marketingMetrics || {
+            monthlyMarketingSpend: 5000,
+            cac: 250,
+            ltv: 1200,
+            ltvCacRatio: 4.8,
+            paybackPeriodMonths: 8,
+            organicGrowthRate: 0.15,
+            paidGrowthRate: 0.35,
+            brandAwarenessSpend: 1500,
+            performanceMarketingSpend: 2500,
+            contentMarketingSpend: 800,
+            affiliateMarketingSpend: 200,
+            conversionRate: 0.08,
+            leadQualityScore: 75,
+            marketingROI: 3.2,
+          }}
+          onMetricsChange={(metrics) =>
+            handleInputChange("marketingMetrics", metrics)
+          }
         />
       )}
 
